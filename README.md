@@ -1,0 +1,2 @@
+# Hardly-Working-Out
+Gameplay workout app. User can enter a number of exercises they want to complete and a timeframe and a tracker tool is used. If the user completes the exercises each day they progress towards their goal. If not they fall back. If the time limit (days) is reached before they get to their goal they fail their goal. Failed and completed goals are logged in the users account. Users can compete against each other and race each other to the finish line.
