@@ -1,0 +1,26 @@
+{
+  "name": "hardly-working-out",
+  "version": "1.0.0",
+  "description": "gameplay workout app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djmasoner/Hardly-Working-Out.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/djmasoner/Hardly-Working-Out/issues"
+  },
+  "homepage": "https://github.com/djmasoner/Hardly-Working-Out#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "request": "^2.88.2"
+  }
+}
