@@ -1,5 +1,5 @@
 var express = require('express');
-var http = require('http'); // Because I am not using a template engine - to serve static html files
+var http = require('http'); // Because we aren't using a template engine - to serve static html files
 var app = express();
 var bodyParser = require('body-parser');
 var request = require('request');
@@ -27,34 +27,29 @@ app.get('/oauth/redirect', function(req, res){
   // Token is received from github and included into a url with the client ID and client secret
   var requestToken = req.query.code;
   res.setHeader('Content-Type', 'application/json');
-  res.setHeader('User-Agent', 'ryancraigdavis');
   var tokenUrl = 'https://github.com/login/oauth/access_token?client_id='+clientID+'&client_secret='+clientSecret+'&code='+requestToken
   
   // Request made to github and the response token is used in the redirection response
-  request(tokenUrl, function(error,response,body){
+  request({
+      uri: tokenUrl, 
+      headers: {'Accept':'application/json'}
+    }, function(error,response,body){
+    
+      // Access token is the OAuth access token for Github
+      var accessToken = (JSON.parse(body)).access_token;
+      var githubApiUrl = 'https://api.github.com/user'
 
-    // For some reason we aren't getting a response object, just a weird URL, the loop parses the response
-    var pos = 13;
-    var accessToken = '';
-    while(body[pos] != '&'){
-      accessToken += body[pos];
-      pos += 1;
-    };
-    // Until i can figure out the issue with this token
-    //var githubApiUrl = 'https://api.github.com/user/'+accessToken
-    var githubApiUrl = 'https://api.github.com/user/95ec25c87660269e115269831cb809133f1517e6'
-
+    // Request made to the Github API with the OAuth token passed; username is requested
     request({
-      uri: githubApiUrl, 
-      headers: {'User-Agent':'ryancraigdavis'}
+      uri: githubApiUrl,
+      // User agent header tells Github which app is requesting, auth token is the OAuth token 
+      headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
       var data = JSON.parse(body);
-      console.log(data);
 
-      // Redirect the user to the welcome page, along with the access token
-      // More code here would use the access token to access user data saved in a database
-      res.redirect('/welcome.html?name='+data.name);
-
+      // Code here would check DB to see if a user exists, if so redirect to welcome page
+      // If not, redirect to account creation page
+      res.redirect('/welcome.html?name='+data.login);
     });
   });
 });
