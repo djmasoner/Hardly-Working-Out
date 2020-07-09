@@ -26,8 +26,19 @@ app.post('/new_account', function(req, res){
     // This simply pushes the form submission into an array
     // Typically this would be saving to a database instead
     formSubmits.push(req.body);
+
+    // Code for saving the profile
+
     console.log(formSubmits);
 	res.send('Success');
+});
+
+app.get('/profile', function(req, res){
+    var path = 'profile.html';
+
+    // Code for getting the profile
+
+    res.send('Success');
 });
 
 // app.post('/news', function(req, res){
