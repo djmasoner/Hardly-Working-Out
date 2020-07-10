@@ -46,24 +46,30 @@ app.get('/oauth/redirect', function(req, res){
       // User agent header tells Github which app is requesting, auth token is the OAuth token 
       headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
-      var data = JSON.parse(body);
+      var githubData = JSON.parse(body);
 
       fs.readFile('./users.json', 'utf-8', function(err, data) {
         if (err) throw err
   
         var userArray = JSON.parse(data);
+        var inUserArray = false
+        for (var i = 0; i < userArray.users.length; i++) {
+          if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
+            inUserArray = true;
+          };
+        };
 
-        if (data.login != undefined) {
-          res.redirect('/welcome.html?name='+data.login);
+        if (inUserArray == true) {
+          res.redirect('/welcome.html?name='+githubData.login);
         }
         else {
-          res.redirect('/create.html?name='+data.login);
+          res.redirect('/create.html?name='+githubData.login);
         }
       });
 
       // Code here would check DB to see if a user exists, if so redirect to welcome page
       // If not, redirect to account creation page
-      res.redirect('/welcome.html?name='+data.login);
+      // res.redirect('/welcome.html?name='+data.login);
     });
   });
 });
