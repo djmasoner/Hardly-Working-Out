@@ -3,6 +3,7 @@ var http = require('http'); // Because we aren't using a template engine - to se
 var app = express();
 var bodyParser = require('body-parser');
 var request = require('request');
+var fs = require('fs');
 
 var formSubmits = []
 
@@ -45,11 +46,30 @@ app.get('/oauth/redirect', function(req, res){
       // User agent header tells Github which app is requesting, auth token is the OAuth token 
       headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
-      var data = JSON.parse(body);
+      var githubData = JSON.parse(body);
+
+      fs.readFile('./users.json', 'utf-8', function(err, data) {
+        if (err) throw err
+  
+        var userArray = JSON.parse(data);
+        var inUserArray = false
+        for (var i = 0; i < userArray.users.length; i++) {
+          if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
+            inUserArray = true;
+          };
+        };
+
+        if (inUserArray == true) {
+          res.redirect('/welcome.html?name='+githubData.login);
+        }
+        else {
+          res.redirect('/create.html?name='+githubData.login);
+        }
+      });
 
       // Code here would check DB to see if a user exists, if so redirect to welcome page
       // If not, redirect to account creation page
-      res.redirect('/welcome.html?name='+data.login);
+      // res.redirect('/welcome.html?name='+data.login);
     });
   });
 });
@@ -69,7 +89,24 @@ app.post('/new_account', function(req, res){
     // Typically this would be saving to a database instead
     formSubmits.push(req.body);
 
-    // Code for saving the profile
+    // Code for saving the profile in a JSON file. 
+    fs.readFile('./users.json', 'utf-8', function(err, data) {
+      if (err) throw err
+
+      var userArray = JSON.parse(data);
+      var userData = JSON.stringify(req.body);
+
+      //Need to get the gitHub user id
+      var userId = "1";
+      
+      userArray.users.push({userId: userData});
+
+      fs.writeFile('./users.json', JSON.stringify(userArray), 'utf-8', function(err) {
+        if (err) throw err
+
+        console.log("Done!")
+      });
+    });
 
     console.log(formSubmits);
 	res.send('Success');
@@ -79,6 +116,13 @@ app.get('/profile', function(req, res){
     var path = 'profile.html';
 
     // Code for getting the profile
+    fs.readFile('./users.json', 'utf-8', function(err, data) {
+      if (err) throw err
+    
+      var userArray = JSON.parse(data);
+      var userId = "1"; 
+    });
+
 
     res.send('Success');
 });
