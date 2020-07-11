@@ -4,8 +4,18 @@ var app = express();
 var bodyParser = require('body-parser');
 var request = require('request');
 var fs = require('fs');
+var mysql = require('mysql');
 
 var formSubmits = []
+
+// MySQL pool connections
+var pool = mysql.createPool({
+  connectionLimit  : 10,
+  host  : 'classmysql.engr.oregonstate.edu',
+  user  : 'cs361_daviryan',
+  password: 'h@rdlyw0rking',
+  database: 'cs361_daviryan'
+});
 
 // Oauth2 Client ID and Secret
 var clientID = '5c5585e7f4040ae68986'
@@ -48,28 +58,46 @@ app.get('/oauth/redirect', function(req, res){
     }, function(error,response,body){
       var githubData = JSON.parse(body);
 
-      fs.readFile('./users.json', 'utf-8', function(err, data) {
-        if (err) throw err
-  
-        var userArray = JSON.parse(data);
-        var inUserArray = false
-        for (var i = 0; i < userArray.users.length; i++) {
-          if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
+      // Query the user table in the database
+      pool.query('SELECT username FROM user', function(err, rows, fields){
+        if (err) {
+          console.log(err)
+        };
+        var inUserArray = false;
+
+        // Loop through the primary keys, if the github login is in the table, redirect to the welcome page
+        // Else redirect to the account creation page
+        for (var i = 0; i < rows.length; i++) {
+          if (rows[i].username == githubData.login) {
             inUserArray = true;
           };
         };
-
         if (inUserArray == true) {
           res.redirect('/welcome.html?name='+githubData.login);
-        }
-        else {
+        } else {
           res.redirect('/create.html?name='+githubData.login);
-        }
+        };
       });
 
-      // Code here would check DB to see if a user exists, if so redirect to welcome page
-      // If not, redirect to account creation page
-      // res.redirect('/welcome.html?name='+data.login);
+      // fs.readFile('./users.json', 'utf-8', function(err, data) {
+      //   if (err) throw err
+  
+      //   var userArray = JSON.parse(data);
+      //   var inUserArray = false
+      //   for (var i = 0; i < userArray.users.length; i++) {
+      //     if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
+      //       inUserArray = true;
+      //     };
+      //   };
+
+      //   if (inUserArray == true) {
+      //     res.redirect('/welcome.html?name='+githubData.login);
+      //   }
+      //   else {
+      //     res.redirect('/create.html?name='+githubData.login);
+      //   }
+      // });
+
     });
   });
 });
@@ -85,31 +113,48 @@ app.get('/', function(req, res){
 });
 
 app.post('/new_account', function(req, res){
-    // This simply pushes the form submission into an array
-    // Typically this would be saving to a database instead
-    formSubmits.push(req.body);
+  var userData = JSON.stringify(req.body);
+  console.log(userData);
 
-    // Code for saving the profile in a JSON file. 
-    fs.readFile('./users.json', 'utf-8', function(err, data) {
-      if (err) throw err
+  pool.query("INSERT INTO user (`username`, `name`, `gender`, `weight`, `height`, `age`, `bmi`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [req.body.username, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        pool.query('SELECT * FROM workouts', function(err, rows, fields){
+          console.log(rows);
+        });
+        res.redirect('/welcome.html');
+      };
+  });
 
-      var userArray = JSON.parse(data);
-      var userData = JSON.stringify(req.body);
+ //    // This simply pushes the form submission into an array
+ //    // Typically this would be saving to a database instead
+ //    formSubmits.push(req.body);
 
-      //Need to get the gitHub user id
-      var userId = "1";
+ //    // Code for saving the profile in a JSON file. 
+ //    fs.readFile('./users.json', 'utf-8', function(err, data) {
+ //      if (err) throw err
+
+ //      var userArray = JSON.parse(data);
+ //      var userData = JSON.stringify(req.body);
+
+ //      //Need to get the gitHub user id
+ //      var userId = "1";
       
-      userArray.users.push({userId: userData});
+ //      userArray.users.push({userId: userData});
 
-      fs.writeFile('./users.json', JSON.stringify(userArray), 'utf-8', function(err) {
-        if (err) throw err
+ //      fs.writeFile('./users.json', JSON.stringify(userArray), 'utf-8', function(err) {
+ //        if (err) throw err
 
-        console.log("Done!")
-      });
-    });
+ //        console.log("Done!")
+ //      });
+ //    });
 
-    console.log(formSubmits);
-	res.send('Success');
+ //    console.log(formSubmits);
+	// res.send('Success');
 });
 
 app.get('/profile', function(req, res){

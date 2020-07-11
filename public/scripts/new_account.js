@@ -10,23 +10,23 @@ function createProfile(){
     var req = new XMLHttpRequest();
 
     // Input values
+    var username = window.location.search.split('=')[1];
     var name = document.getElementById('nameInput').value;
-    var email = document.getElementById('emailInput').value;
-    var password = document.getElementById('passwordInput').value;
     var height = document.getElementById('heightInput').value;
     var weight = document.getElementById('weightInput').value;
     var gender = document.getElementById('genderInput').value;
     var age = document.getElementById('ageInput').value;
+    var bmi = (weight / (height**2)) * 703;
 
     var formObject = new Object();
     formObject = {
+        "username": username,
         "name": name,
-        "email": email,
-        "password": password,
         "height": height,
         "weight": weight,
         "gender": gender,
-        "age": age
+        "age": age,
+        "bmi": bmi
     };
 
     req.open('POST', 'http://localhost:3000/new_account', true);
@@ -35,7 +35,7 @@ function createProfile(){
       if(req.status >= 200 && req.status < 400){
 
           // Success message sent
-		      alert('Form Submit Success')
+		      console.log('Form Submit Success')
 
       } else {
         console.log("Error in network request: " + req.statusText);
