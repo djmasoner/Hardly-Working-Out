@@ -1,6 +1,8 @@
 var express = require('express');
 var http = require('http'); // Because we aren't using a template engine - to serve static html files
 var app = express();
+var passport = require('passport');//
+var GitHubStrategy = require('passport-github').Strategy; //
 var bodyParser = require('body-parser');
 var request = require('request');
 var fs = require('fs');
@@ -31,6 +33,18 @@ app.use(function(req,res,next) {
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 })
+
+passport.use(new GitHubStrategy({
+    clientID: clientID,
+    clientSecret: clientSecret,
+    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({githubID: profile.id}, function (err, user) {
+      return cb(err, user)
+    });
+  }
+  ));
 
 // The login redirect route
 app.get('/oauth/redirect', function(req, res){
@@ -158,18 +172,13 @@ app.post('/new_account', function(req, res){
 });
 
 app.get('/profile', function(req, res){
+  passport.authenticate('github', {failureRedirect: '/new_account'}),
+  function(req, res) {
+    //success, redirect to profile.
     var path = 'profile.html';
-
-    // Code for getting the profile
-    fs.readFile('./users.json', 'utf-8', function(err, data) {
-      if (err) throw err
-    
-      var userArray = JSON.parse(data);
-      var userId = "1"; 
-    });
-
-
+    res.sendFile(path, {root: './public'})
     res.send('Success');
+  };
 });
 
 console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
