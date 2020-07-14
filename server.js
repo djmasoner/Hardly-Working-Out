@@ -1,10 +1,7 @@
 var express = require('express');
 var http = require('http'); // Because we aren't using a template engine - to serve static html files
 var app = express();
-<<<<<<< HEAD
-=======
 var session = require('express-session');
->>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
 var bodyParser = require('body-parser');
 var request = require('request');
 var fs = require('fs');
@@ -36,8 +33,6 @@ app.use(function(req,res,next) {
   next();
 })
 
-<<<<<<< HEAD
-=======
 // Sets up our session
 app.use (session({
   secret: '12345',
@@ -45,7 +40,6 @@ app.use (session({
   saveUninitialized: true,
   //won't use secure since we aren't using HTTPS
 }))
->>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
 
 // The login redirect route
 app.get('/oauth/redirect', function(req, res){
@@ -170,11 +164,7 @@ app.get('/profile', function(req, res){
   function(req, res) {
     //success, redirect to profile.
     var path = 'profile.html';
-<<<<<<< HEAD
     res.sendFile(path, {root: './public'})
-=======
-
->>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
     res.send('Success');
   };
 });
