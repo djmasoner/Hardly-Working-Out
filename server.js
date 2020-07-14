@@ -1,8 +1,10 @@
 var express = require('express');
 var http = require('http'); // Because we aren't using a template engine - to serve static html files
 var app = express();
-var passport = require('passport');//
-var GitHubStrategy = require('passport-github').Strategy; //
+<<<<<<< HEAD
+=======
+var session = require('express-session');
+>>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
 var bodyParser = require('body-parser');
 var request = require('request');
 var fs = require('fs');
@@ -34,17 +36,16 @@ app.use(function(req,res,next) {
   next();
 })
 
-passport.use(new GitHubStrategy({
-    clientID: clientID,
-    clientSecret: clientSecret,
-    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({githubID: profile.id}, function (err, user) {
-      return cb(err, user)
-    });
-  }
-  ));
+<<<<<<< HEAD
+=======
+// Sets up our session
+app.use (session({
+  secret: '12345',
+  resave: false,
+  saveUninitialized: true,
+  //won't use secure since we aren't using HTTPS
+}))
+>>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
 
 // The login redirect route
 app.get('/oauth/redirect', function(req, res){
@@ -71,46 +72,30 @@ app.get('/oauth/redirect', function(req, res){
       headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
       var githubData = JSON.parse(body);
+      req.session.userData = githubData.login;
+
+      res.redirect('/welcome.html?name='+githubData.login);
 
       // Query the user table in the database
-      pool.query('SELECT username FROM user', function(err, rows, fields){
-        if (err) {
-          console.log(err)
-        };
-        var inUserArray = false;
+      //pool.query('SELECT username FROM user', function(err, rows, fields){
+      //if (err) {
+      //  console.log(err)
+      // };
+      //  var inUserArray = false;
 
         // Loop through the primary keys, if the github login is in the table, redirect to the welcome page
         // Else redirect to the account creation page
-        for (var i = 0; i < rows.length; i++) {
-          if (rows[i].username == githubData.login) {
-            inUserArray = true;
-          };
-        };
-        if (inUserArray == true) {
-          res.redirect('/welcome.html?name='+githubData.login);
-        } else {
-          res.redirect('/create.html?name='+githubData.login);
-        };
-      });
-
-      // fs.readFile('./users.json', 'utf-8', function(err, data) {
-      //   if (err) throw err
-  
-      //   var userArray = JSON.parse(data);
-      //   var inUserArray = false
-      //   for (var i = 0; i < userArray.users.length; i++) {
-      //     if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
-      //       inUserArray = true;
-      //     };
-      //   };
-
-      //   if (inUserArray == true) {
-      //     res.redirect('/welcome.html?name='+githubData.login);
-      //   }
-      //   else {
-      //     res.redirect('/create.html?name='+githubData.login);
-      //   }
-      // });
+      //  for (var i = 0; i < rows.length; i++) {
+      //    if (rows[i].username == githubData.login) {
+      //      inUserArray = true;
+      //    };
+      //  };
+      // // if (inUserArray == true) {
+      //    res.redirect('/welcome.html?name='+githubData.login);
+      //  } else {
+      //    res.redirect('/create.html?name='+githubData.login);
+      //  };
+      //});
 
     });
   });
@@ -121,9 +106,18 @@ app.get('/new_account', function(req, res){
     res.sendFile(path, {root: './public'});
 });
 
+app.get('/login', function(req, res){
+  var path = 'login.html';
+  res.sendFile(path, {root: './public'})
+})
+
 app.get('/', function(req, res){
-    var path = 'login.html';
-    res.sendFile(path, {root: './public'});
+    if (req.session.userData == undefined) {
+      res.redirect('/login');
+    }
+    else {
+      res.redirect('/welcome.html?name='+req.session.userData);
+    }
 });
 
 app.post('/new_account', function(req, res){
@@ -176,7 +170,11 @@ app.get('/profile', function(req, res){
   function(req, res) {
     //success, redirect to profile.
     var path = 'profile.html';
+<<<<<<< HEAD
     res.sendFile(path, {root: './public'})
+=======
+
+>>>>>>> e0195ef950efdfa6ffdcc5416766f01c0303aa33
     res.send('Success');
   };
 });
