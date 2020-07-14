@@ -1,17 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Creation Page</title>
+	<meta charset="utf-8">
+	<title>Create Your Profile</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 </head>
 <body>
+	<form class="form-horizontal w-75 mx-auto">
+		<fieldset>
+		
+		<!-- Form Name -->
+		<legend>Create A New Account</legend>
+		
+		<!-- Text input-->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Name">Name</label>  
+		  <div class="col-md-4">
+		  <input id="Name" name="Name" type="text" placeholder="ex. John Doe" class="form-control input-md" required="">
+			
+		  </div>
+		</div>
+		
+		<!-- Multiple Radios (inline) -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Gender">Gender</label>
+		  <div class="col-md-4"> 
+			<label class="radio-inline" for="Gender-0">
+			  <input type="radio" name="Gender" id="Gender-0" value="Male" checked="checked">
+			  Male
+			</label> 
+			<label class="radio-inline" for="Gender-1">
+			  <input type="radio" name="Gender" id="Gender-1" value="Female">
+			  Female
+			</label> 
+			<label class="radio-inline" for="Gender-2">
+			  <input type="radio" name="Gender" id="Gender-2" value="Decline">
+			  Decline to Answer
+			</label>
+		  </div>
+		</div>
+		
+		<!-- Text input-->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Age">Age</label>  
+		  <div class="col-md-4">
+		  <input id="Age" name="Age" type="number" placeholder="ex. 53" class="form-control input-md" required="">
+		  <span class="help-block">This will be used for fitness calculations such as BMI</span>  
+		  </div>
+		</div>
+		
+		<!-- Button Drop Down -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Height">Height</label>
+		  <div class="col-md-4">
+			<div class="input-group">
+			  <input id="Height" name="Height" class="form-control" placeholder="ex 180" type="number" required="">
+			  <div class="input-group-btn">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				  Units
+				  <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu pull-right">
+				  <li><a href="#">Metric</a></li>
+				  <li><a href="#">Imperial</a></li>
+				</ul>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<!-- Button Drop Down -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Weight">Weight</label>
+		  <div class="col-md-4">
+			<div class="input-group">
+			  <input id="Weight" name="Weight" class="form-control" placeholder="ex 200" type="number" required="">
+			  <div class="input-group-btn">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				  Units
+				  <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu pull-right">
+				  <li><a href="#">pounds</a></li>
+				  <li><a href="#">kilograms</a></li>
+				</ul>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<!-- Button -->
+		<div class="form-group">
+		  <label class="col-md-4 control-label" for="Submit">Create Your Account</label>
+		  <div class="col-md-4">
+			<button id="Submit" name="Submit" class="btn btn-primary">Submit</button>
+		  </div>
+		</div>
+		
+		</fieldset>
+	</form>
+</body>
 
-<form class="bg-warning"> <!-- Code for carousel from Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<script type="text/javascript" src="scripts/new_account.js"></script>
+</html>
 
-	<div class="section-header">
-		<h4>Create Your Profile</h4>
-	</div>
-
+<!--
 	<div class="form-group">
     	<label for="nameInput">Name</label>
     	<input type="text" class="form-control" id="nameInput" placeholder="John Doe">
@@ -40,11 +136,4 @@
   	<button type="submit" class="btn btn-dark" id="submitForm">Submit</button>
 
 </form>
-
-
-</body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script type="text/javascript" src="scripts/new_account.js"></script>
-</html>
+-->
