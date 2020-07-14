@@ -1,9 +1,9 @@
 var express = require('express');
 var http = require('http'); // Because we aren't using a template engine - to serve static html files
 var app = express();
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var request = require('request');
-var fs = require('fs');
 var mysql = require('mysql');
 
 var formSubmits = []
@@ -32,14 +32,20 @@ app.use(function(req,res,next) {
   next();
 })
 
+// // Sets up our session
+// app.use (session({
+//   secret: '12345',
+//   resave: false,
+//   saveUninitialized: true,
+//   //won't use secure since we aren't using HTTPS
+// }))
+
 // The login redirect route
 app.get('/oauth/redirect', function(req, res){
-
   // Token is received from github and included into a url with the client ID and client secret
   var requestToken = req.query.code;
-  res.setHeader('Content-Type', 'application/json');
+  //res.setHeader('Content-Type', 'application/json');
   var tokenUrl = 'https://github.com/login/oauth/access_token?client_id='+clientID+'&client_secret='+clientSecret+'&code='+requestToken
-  
   // Request made to github and the response token is used in the redirection response
   request({
       uri: tokenUrl, 
@@ -49,7 +55,6 @@ app.get('/oauth/redirect', function(req, res){
       // Access token is the OAuth access token for Github
       var accessToken = (JSON.parse(body)).access_token;
       var githubApiUrl = 'https://api.github.com/user'
-
     // Request made to the Github API with the OAuth token passed; username is requested
     request({
       uri: githubApiUrl,
@@ -57,59 +62,39 @@ app.get('/oauth/redirect', function(req, res){
       headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
       var githubData = JSON.parse(body);
-
-      // Query the user table in the database
-      pool.query('SELECT username FROM user', function(err, rows, fields){
-        if (err) {
-          console.log(err)
-        };
-        var inUserArray = false;
-
-        // Loop through the primary keys, if the github login is in the table, redirect to the welcome page
-        // Else redirect to the account creation page
-        for (var i = 0; i < rows.length; i++) {
-          if (rows[i].username == githubData.login) {
-            inUserArray = true;
-          };
-        };
-        if (inUserArray == true) {
-          res.redirect('/welcome.html?name='+githubData.login);
-        } else {
-          res.redirect('/create.html?name='+githubData.login);
-        };
-      });
-
-      // fs.readFile('./users.json', 'utf-8', function(err, data) {
-      //   if (err) throw err
-  
-      //   var userArray = JSON.parse(data);
-      //   var inUserArray = false
-      //   for (var i = 0; i < userArray.users.length; i++) {
-      //     if ((JSON.parse(userArray.users[i].userId)).name == githubData.login) {
-      //       inUserArray = true;
-      //     };
-      //   };
-
-      //   if (inUserArray == true) {
-      //     res.redirect('/welcome.html?name='+githubData.login);
-      //   }
-      //   else {
-      //     res.redirect('/create.html?name='+githubData.login);
-      //   }
-      // });
-
+      //req.session.userData = githubData.login;
+      res.redirect('/welcome.html?name='+githubData.login);
     });
   });
 });
 
 app.get('/new_account', function(req, res){
-    var path = 'create.html';
-    res.sendFile(path, {root: './public'});
+  var path = 'create.html';
+  res.sendFile(path, {root: './public'});
 });
 
+app.get('/login', function(req, res){
+  var path = 'login.html';
+  res.sendFile(path, {root: './public'})
+})
+
 app.get('/', function(req, res){
-    var path = 'login.html';
-    res.sendFile(path, {root: './public'});
+  var path = 'login.html';
+  res.sendFile(path, {root: './public'})
+})
+
+// app.get('/', function(req, res){
+//   if (req.session.userData == undefined) {
+//     res.redirect('/login');
+//   }
+//   else {
+//     res.redirect('/welcome.html?name='+req.session.userData);
+//   }
+// });
+
+app.get('/logout', function(req, res){
+//  req.session.destroy();
+  res.redirect('/login.html');
 });
 
 app.post('/new_account', function(req, res){
@@ -129,47 +114,13 @@ app.post('/new_account', function(req, res){
         res.redirect('/welcome.html');
       };
   });
-
- //    // This simply pushes the form submission into an array
- //    // Typically this would be saving to a database instead
- //    formSubmits.push(req.body);
-
- //    // Code for saving the profile in a JSON file. 
- //    fs.readFile('./users.json', 'utf-8', function(err, data) {
- //      if (err) throw err
-
- //      var userArray = JSON.parse(data);
- //      var userData = JSON.stringify(req.body);
-
- //      //Need to get the gitHub user id
- //      var userId = "1";
-      
- //      userArray.users.push({userId: userData});
-
- //      fs.writeFile('./users.json', JSON.stringify(userArray), 'utf-8', function(err) {
- //        if (err) throw err
-
- //        console.log("Done!")
- //      });
- //    });
-
- //    console.log(formSubmits);
-	// res.send('Success');
 });
 
 app.get('/profile', function(req, res){
-    var path = 'profile.html';
-
-    // Code for getting the profile
-    fs.readFile('./users.json', 'utf-8', function(err, data) {
-      if (err) throw err
-    
-      var userArray = JSON.parse(data);
-      var userId = "1"; 
-    });
-
-
-    res.send('Success');
+  //success, redirect to profile.
+  var path = 'profile.html';
+  res.sendFile(path, {root: './public'})
+  res.send('Success');
 });
 
 console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
