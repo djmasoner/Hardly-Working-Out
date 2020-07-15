@@ -33,12 +33,12 @@ app.use(function(req,res,next) {
 })
 
 // // Sets up our session
-// app.use (session({
-//   secret: '12345',
-//   resave: false,
-//   saveUninitialized: true,
-//   //won't use secure since we aren't using HTTPS
-// }))
+app.use (session({
+  secret: '12345',
+  resave: false,
+  saveUninitialized: true,
+  //won't use secure since we aren't using HTTPS
+}))
 
 // The login redirect route
 app.get('/oauth/redirect', function(req, res){
@@ -62,44 +62,19 @@ app.get('/oauth/redirect', function(req, res){
       headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
     }, function(error,response,body){
       var githubData = JSON.parse(body);
-      //req.session.userData = githubData.login;
-      res.redirect('/welcome.html?name='+githubData.login);
+      req.session.userData = githubData.login;
+      res.redirect('/welcome.html');
     });
   });
 });
 
-app.get('/new_account', function(req, res){
-  var path = 'create.html';
-  res.sendFile(path, {root: './public'});
-});
-
-app.get('/login', function(req, res){
-  var path = 'login.html';
-  res.sendFile(path, {root: './public'})
-})
-
-app.get('/', function(req, res){
-  var path = 'login.html';
-  res.sendFile(path, {root: './public'})
-})
-
-// app.get('/', function(req, res){
-//   if (req.session.userData == undefined) {
-//     res.redirect('/login');
-//   }
-//   else {
-//     res.redirect('/welcome.html?name='+req.session.userData);
-//   }
-// });
-
 app.get('/logout', function(req, res){
-//  req.session.destroy();
-  res.redirect('/login.html');
+  req.session.destroy();
+  res.redirect('/login');
 });
 
 app.post('/new_account', function(req, res){
   var userData = JSON.stringify(req.body);
-  console.log(userData);
 
   pool.query("INSERT INTO user (`username`, `name`, `gender`, `weight`, `height`, `age`, `bmi`) VALUES (?, ?, ?, ?, ?, ?, ?)",
     [req.body.username, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi], 
@@ -116,12 +91,45 @@ app.post('/new_account', function(req, res){
   });
 });
 
-app.get('/profile', function(req, res){
-  //success, redirect to profile.
-  var path = 'profile.html';
-  res.sendFile(path, {root: './public'})
-  res.send('Success');
+// Display the profile information
+app.get('/display_profile', function(req, res){
+  if (req.session.userData) {
+    pool.query('SELECT * FROM user', function(err, rows, fields){
+      console.log(rows);
+    });
+    res.send(rows);
+  };
 });
+
+app.get('/', function(req, res){
+  // If the user is logged in, redirect to welcome page
+  if (req.session.userData) {
+    res.redirect('/welcome.html');
+  }
+  else {
+    res.redirect('/login');
+  }
+});
+
+app.get('/profile', function(req, res){
+  if (req.session.userData) {
+    var path = 'profile.html';
+    res.sendFile(path, {root: './public'})
+  }
+  else {
+    res.redirect('/login');
+  }
+});
+
+app.get('/new_account', function(req, res){
+  var path = 'create.html';
+  res.sendFile(path, {root: './public'});
+});
+
+app.get('/login', function(req, res){
+  var path = 'login.html';
+  res.sendFile(path, {root: './public'})
+})
 
 console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
 http.createServer(app).listen(3000);

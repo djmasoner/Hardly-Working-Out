@@ -73,7 +73,7 @@ function getProfile(){
 
   	// Creates the response
 	var req = new XMLHttpRequest();
-	req.open("GET", 'http://localhost:3000/profile', true);
+	req.open("GET", 'http://localhost:3000/display_profile', true);
 	req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {
