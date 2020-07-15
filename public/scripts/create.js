@@ -1,5 +1,3 @@
-const session = require("express-session");
-
 // Submit buttons
 document.getElementById("submitForm").addEventListener("click", createProfile);
 
@@ -12,8 +10,6 @@ function createProfile(){
     var req = new XMLHttpRequest();
 
     // Input values
-    //var username = window.location.search.split('=')[1]; Disabled temporarily
-    var username = session.id;
     var name = document.getElementById('nameInput').value; 
     var height = document.getElementById('heightInput').value; 
     var weight = document.getElementById('weightInput').value; 
@@ -27,7 +23,7 @@ function createProfile(){
     var age = document.getElementById('ageInput').value; 
     var bmi = (weight / (height**2)) * 703; 
 
-    inputArray = [username, name, height, weight, gender, age, bmi];
+    inputArray = [name, height, weight, gender, age, bmi];
 
     // Primitive error checking to make sure all the inputs are present (not the best but it works since html required isn't working)
     for (var i = 0, length = inputArray.length; i < length; i++) {
@@ -39,7 +35,6 @@ function createProfile(){
 
     var formObject = new Object();
     formObject = {
-        "username": username,
         "name": name,
         "height": height,
         "weight": weight,
@@ -52,15 +47,28 @@ function createProfile(){
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
-
-          // Success message sent
-          console.log('Form Submit Success')
-          console.log(formObject)
-
+        console.log('Success')
       } else {
         console.log("Error in network request: " + req.statusText);
       }});
 
     req.send(JSON.stringify(formObject));
 
+  // // Creates the redirect response
+  //   var req2 = new XMLHttpRequest();
+  //   req2.open("GET", 'http://localhost:3000/welcome', true);
+  //   req2.withCredentials = false;
+  //   req.onload = function (e) {
+  //       if (req2.readyState === 4) {
+  //         if (req2.status === 200) {
+  //           console.log('Redirect Welcome')
+  //         } else {
+  //           console.error(req2.statusText);
+  //         }
+  //       }
+  //   };
+  //   req.onerror = function (e) {
+  //     console.error(req.statusText);
+  //   };
+  //   req.send(null);
 };

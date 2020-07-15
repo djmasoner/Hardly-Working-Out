@@ -63,7 +63,20 @@ app.get('/oauth/redirect', function(req, res){
     }, function(error,response,body){
       var githubData = JSON.parse(body);
       req.session.userData = githubData.login;
-      res.redirect('/welcome.html');
+
+      pool.query('SELECT Username FROM user', function(err, rows, fields){
+        var usernameValid = false;
+        for (var i = 0; i < rows.length; i++) {
+          if (rows[i].Username == req.session.userData) {
+            usernameValid = true;
+          };
+        };
+        if (usernameValid == true) {
+          res.redirect('/welcome');
+        } else {
+          res.redirect('/create');
+        };
+      });
     });
   });
 });
@@ -77,16 +90,13 @@ app.post('/create', function(req, res){
   var userData = JSON.stringify(req.body);
 
   pool.query("INSERT INTO user (`username`, `name`, `gender`, `weight`, `height`, `age`, `bmi`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [req.body.username, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi], 
+    [req.session.userData, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi], 
     function(err, result){
       if (err) {
         console.log(err)
       };
       if (result) {
-        pool.query('SELECT * FROM workouts', function(err, rows, fields){
-        });
-        req.session.userData = req.body.username;
-        res.redirect('/welcome');  // @@@@@@@@@@@@@ CHECK HERE!!!@@@@@@@@@@@@@@@@@@@@@@
+        res.send(null);
       };
   });
 });
@@ -94,7 +104,7 @@ app.post('/create', function(req, res){
 // Display the profile information
 app.get('/display_profile', function(req, res){
   if (req.session.userData) {
-    var ageTest = 'ryancraigdavis';
+
     // SQL query requires string to be in "double" quotes
     pool.query('SELECT * FROM user WHERE Username = "'+req.session.userData+'"', function(err, rows, fields){
       res.send(rows[0]);
@@ -105,7 +115,7 @@ app.get('/display_profile', function(req, res){
 app.get('/', function(req, res){
   // If the user is logged in, redirect to welcome page
   if (req.session.userData) {
-    res.redirect('/welcome.html');
+    res.redirect('/welcome');
   }
   else {
     res.redirect('/login');
@@ -120,6 +130,11 @@ app.get('/profile', function(req, res){
   else {
     res.redirect('/login');
   }
+});
+
+app.get('/welcome', function(req, res){
+  var path = 'welcome.html';
+  res.sendFile(path, {root: './public'});
 });
 
 app.get('/create', function(req, res){
