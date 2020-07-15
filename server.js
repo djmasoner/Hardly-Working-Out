@@ -84,7 +84,6 @@ app.post('/new_account', function(req, res){
       };
       if (result) {
         pool.query('SELECT * FROM workouts', function(err, rows, fields){
-          console.log(rows);
         });
         res.redirect('/welcome.html');
       };
@@ -94,10 +93,11 @@ app.post('/new_account', function(req, res){
 // Display the profile information
 app.get('/display_profile', function(req, res){
   if (req.session.userData) {
-    pool.query('SELECT * FROM user', function(err, rows, fields){
-      console.log(rows);
+    var ageTest = 'ryancraigdavis';
+    // SQL query requires string to be in "double" quotes
+    pool.query('SELECT * FROM user WHERE Username = "'+req.session.userData+'"', function(err, rows, fields){
+      res.send(rows[0]);
     });
-    res.send(rows);
   };
 });
 
