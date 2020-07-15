@@ -73,7 +73,7 @@ app.get('/logout', function(req, res){
   res.redirect('/login');
 });
 
-app.post('/new_account', function(req, res){
+app.post('/create', function(req, res){
   var userData = JSON.stringify(req.body);
 
   pool.query("INSERT INTO user (`username`, `name`, `gender`, `weight`, `height`, `age`, `bmi`) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -85,7 +85,8 @@ app.post('/new_account', function(req, res){
       if (result) {
         pool.query('SELECT * FROM workouts', function(err, rows, fields){
         });
-        res.redirect('/welcome.html');
+        req.session.userData = req.body.username;
+        res.redirect('/welcome');  // @@@@@@@@@@@@@ CHECK HERE!!!@@@@@@@@@@@@@@@@@@@@@@
       };
   });
 });
@@ -121,7 +122,7 @@ app.get('/profile', function(req, res){
   }
 });
 
-app.get('/new_account', function(req, res){
+app.get('/create', function(req, res){
   var path = 'create.html';
   res.sendFile(path, {root: './public'});
 });
