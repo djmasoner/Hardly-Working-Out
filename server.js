@@ -225,5 +225,14 @@ app.get('/workouts', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
+app.get('/view_workout', function(req, res){
+  pool.query("SELECT * FROM Generic Workouts Table WHERE ID=" + req.body.name), function(err, rows, fields){
+    res.send(rows);;
+    console.log(rows)
+  };
+  var path = 'view_workout';
+  res.sendFile(path, {root: './public'})
+})
+
 console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
 http.createServer(app).listen(3000);
