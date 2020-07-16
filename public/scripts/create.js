@@ -13,7 +13,11 @@ function createProfile(){
     var name = document.getElementById('nameInput').value; 
     var height = document.getElementById('heightInput').value; 
     var weight = document.getElementById('weightInput').value; 
-    var radioInput = document.getElementsByName('genderInput'); 
+    var radioInput = document.getElementsByName('genderInput');
+    var today = new Date();
+
+    today.setDate(today.getDate());
+    today = today.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }); 
 
     for (var i = 0, length = radioInput.length; i < length; i++) {
       if(radioInput[i].checked) {
@@ -23,7 +27,7 @@ function createProfile(){
     var age = document.getElementById('ageInput').value; 
     var bmi = (weight / (height**2)) * 703; 
 
-    inputArray = [name, height, weight, gender, age, bmi];
+    inputArray = [name, height, weight, gender, age, bmi, today];
 
     // Primitive error checking to make sure all the inputs are present (not the best but it works since html required isn't working)
     for (var i = 0, length = inputArray.length; i < length; i++) {
@@ -40,7 +44,8 @@ function createProfile(){
         "weight": weight,
         "gender": gender,
         "age": age,
-        "bmi": bmi
+        "bmi": bmi,
+        "today": today
     };
 
     req.open('POST', 'http://localhost:3000/create', true);

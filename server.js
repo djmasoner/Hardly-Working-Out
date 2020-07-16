@@ -96,7 +96,37 @@ app.post('/create', function(req, res){
         console.log(err)
       };
       if (result) {
-        res.send(null);
+
+        // Creates a table for daily tracking of BMI
+        var createDailyTable = "CREATE TABLE daily_"+req.session.userData+"(" +
+          "id INT PRIMARY KEY AUTO_INCREMENT," +
+          "username VARCHAR(255) NOT NULL," +
+          "height INT," +
+          "weight INT," +
+          "bmi INT," +
+          "date DATE," +
+          "FOREIGN KEY (username) REFERENCES user (username))";
+
+        // Creates the daily tracking of BMI table for the user
+        pool.query(createDailyTable, function(err, result){
+          if (err) {
+            console.log(err)
+          };
+          if (result) {
+            console.log(req.session.userData+' Profile Created')
+            pool.query("INSERT INTO daily_"+req.session.userData+" (`username`, `height`, `weight`, `bmi`, `date`) VALUES (?, ?, ?, ?, ?)",
+              [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.today], 
+              function(err, result){
+                if (err) {
+                  console.log(err)
+                };
+                if (result) {
+                  res.send('Success');
+                };
+              }
+            );
+          }
+        });
       };
   });
 });
@@ -110,6 +140,49 @@ app.get('/display_profile', function(req, res){
       res.send(rows[0]);
     });
   };
+});
+
+// // Display the profile information
+// app.get('/display_profile', function(req, res){
+//   if (req.session.userData) {
+
+//     // SQL query requires string to be in "double" quotes
+//     pool.query('SELECT * FROM user WHERE Username = "'+req.session.userData+'"', function(err, rows, fields){
+//       res.send(rows[0]);
+//     });
+//   };
+// });
+
+app.post('/daily_update', function(req, res){
+
+  // Gets the date from the Post object and compares to the dates inside the database
+  pool.query('SELECT Date FROM daily_'+req.session.userData, function(err, rows, fields){
+    var todayValid = true;
+    for (var i = 0; i < rows.length; i++) {
+      if ((rows[i].Date).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }) == req.body.date) {
+        todayValid = false;
+      };
+    };
+
+    // If the user hasn't yet made a daily update, create that daily update
+    if (todayValid == true) {
+      pool.query("INSERT INTO daily_"+req.session.userData+" (`username`, `height`, `weight`, `bmi`, `date`) VALUES (?, ?, ?, ?, ?)",
+        [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.date], 
+        function(err, result){
+          if (err) {
+            console.log(err)
+          };
+          if (result) {
+            res.send('Success');
+          };
+        }
+      );
+
+      // Otherwise, return 'Failure' meaning the user has already updated for the day
+    } else {
+      res.send('Failure');
+    };
+  }); 
 });
 
 app.get('/', function(req, res){
