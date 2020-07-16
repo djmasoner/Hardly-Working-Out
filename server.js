@@ -220,5 +220,10 @@ app.get('/login', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
+app.get('/workouts', function(req, res){
+  var path = 'workouts.html';
+  res.sendFile(path, {root: './public'})
+})
+
 console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
 http.createServer(app).listen(3000);

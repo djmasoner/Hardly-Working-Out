@@ -1,0 +1,21 @@
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    ;
+  }
+  
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    }
+  
+tr:nth-child(even) {
+    background-color: #b3d9f8be;
+    }
+  
+body {
+    background-image: url("/Users/scott/GitHub/Hardly-Working-Out/sport-shoes-jumping-rope-pink-background_4740-1206.jpg");
+    background-color: #cccccc;
+    }
