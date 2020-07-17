@@ -142,17 +142,6 @@ app.get('/display_profile', function(req, res){
   };
 });
 
-// // Display the profile information
-// app.get('/display_profile', function(req, res){
-//   if (req.session.userData) {
-
-//     // SQL query requires string to be in "double" quotes
-//     pool.query('SELECT * FROM user WHERE Username = "'+req.session.userData+'"', function(err, rows, fields){
-//       res.send(rows[0]);
-//     });
-//   };
-// });
-
 app.post('/daily_update', function(req, res){
 
   // Gets the date from the Post object and compares to the dates inside the database
@@ -183,6 +172,17 @@ app.post('/daily_update', function(req, res){
       res.send('Failure');
     };
   }); 
+});
+
+// Get daily profile data for the daily tracking chart
+app.get('/get_daily_update', function(req, res){
+  if (req.session.userData) {
+
+    // SQL query requires string to be in "double" quotes
+    pool.query('SELECT * FROM daily_'+req.session.userData, function(err, rows, fields){
+      res.send(rows);
+    });
+  };
 });
 
 app.get('/', function(req, res){
