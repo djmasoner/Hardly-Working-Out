@@ -48,7 +48,11 @@ function createProfile(){
         "today": today
     };
 
-    req.open('POST', 'http://localhost:3000/create', true);
+    var localUrl = 'http://localhost:3000/create';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/create';
+
+    req.open('POST', flipUrl, true);
+    //req.open('POST', localUrl, true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){

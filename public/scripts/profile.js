@@ -5,7 +5,12 @@ function getProfile(){
 
   	// Creates the response
 	var req = new XMLHttpRequest();
-	req.open("GET", 'http://localhost:3000/display_profile', true);
+
+	var localUrl = 'http://localhost:3000/display_profile';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/display_profile';
+
+    req.open('GET', flipUrl, true);
+    //req.open('GET', localUrl, true);
 	req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {
@@ -93,7 +98,11 @@ function dailyUpdate(){
         "date": day
     };
 
-    req.open('POST', 'http://localhost:3000/daily_update', true);
+    var localUrl = 'http://localhost:3000/display_profile';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/display_profile';
+
+    req.open('POST', flipUrl, true);
+    //req.open('POST', localUrl, true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
@@ -132,7 +141,12 @@ function getDailyUpdate(){
 	console.log(dateRangeDash);
   	// Creates the response
 	var req = new XMLHttpRequest();
-	req.open("GET", 'http://localhost:3000/get_daily_update', true);
+	var localUrl = 'http://localhost:3000/get_daily_update';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/get_daily_update';
+
+    req.open('GET', flipUrl, true);
+    //req.open('GET', localUrl, true);
+
 	req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {

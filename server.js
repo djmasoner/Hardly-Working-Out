@@ -254,5 +254,5 @@ app.get('/view_workout', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
-console.log('Express started on http://localhost:3000; press Ctrl-C to terminate.');
-http.createServer(app).listen(3000);
+console.log('Express started on port 3000; press Ctrl-C to terminate.');
+http.createServer(app).listen(1344);
