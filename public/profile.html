@@ -36,7 +36,7 @@
 	    <div class="inner">
 	      <h3 class="masthead-brand">Profile</h3>
 	      <nav class="nav nav-masthead justify-content-center">
-	        <a class="nav-link" href="#">Home</a>
+	        <a class="nav-link" href="/welcome">Home</a>
 	        <a class="nav-link active" href="/profile">Profile</a>
 	        <a class="nav-link" href="/workouts">Workouts</a>
 	        <a class="nav-link" href="/logout">Logout</a>
@@ -44,11 +44,12 @@
 	    </div>
 	  </header>
 
-  <main role="main" class="inner cover">
+<div class="main-container">
+	<div class="profile-container">
   	<table id="profileTable">
 			<thead>
 				<tr>
-					<th></th>
+					<th>Profile Information</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -82,9 +83,26 @@
 				</tr>
 			</tbody>
 		</table>
-	<div class="dashboard-tracker" id="daily-dashboard">
-		<canvas id="daily-chart" width="700" height="350"></canvas>
+		<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
+	  Daily Update
+		</button>
 	</div>
+	<div class="dashboard-container">
+		<div class="dashboard-tracker" id="daily-dashboard">
+			<canvas id="daily-chart" width="700" height="350"></canvas>
+		</div>
+
+		<div class="weight-tracker" id="weight-dashboard">
+			<canvas id="weight-chart" width="300" height="150"></canvas>
+		</div>
+
+		<div class="height-tracker" id="height-dashboard">
+			<canvas id="height-chart" width="300" height="150"></canvas>
+		</div>
+	</div>
+</div>
+
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -115,18 +133,16 @@
 		</form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="updateBmi" data-dismiss="modal">Save changes</button>
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-dark" id="updateBmi" data-dismiss="modal">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Daily Update
-</button>
 
-  </main>
+
+
 
 
   <footer class="mastfoot mt-auto">

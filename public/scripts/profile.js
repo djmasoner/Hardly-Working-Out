@@ -140,7 +140,9 @@ function getDailyUpdate(){
 
 	    		// Data from daily user table
     			var data = JSON.parse(req.responseText);
-    			dailyBmi = [];
+    			var dailyBmi = [];
+    			var dailyWeight = [];
+    			var dailyHeight = [];
     			var pos = -1;
 
     			// Goes through DB data and if dates match, insert the data, if not, insert a 0
@@ -152,6 +154,8 @@ function getDailyUpdate(){
 
     					if (dVar == dateRangeDash[i]) {
     						dailyBmi.push(data[j].bmi);
+    						dailyWeight.push(data[j].weight);
+    						dailyHeight.push(data[j].height);
     						pos = j;
     						inData = true;
     					};
@@ -160,8 +164,12 @@ function getDailyUpdate(){
 					if (inData == false) {
 						if (pos == -1) {
 							dailyBmi.push(0);
+							dailyWeight.push(0);
+							dailyHeight.push(0);
 						} else {
 							dailyBmi.push(data[j-1].bmi);
+							dailyWeight.push(data[j-1].weight);
+							dailyHeight.push(data[j-1].height);
 						};
 						
 					};
@@ -172,7 +180,7 @@ function getDailyUpdate(){
     			var removeChart = document.getElementById('daily-chart');
 				removeChart.parentNode.removeChild(removeChart);
 				document.getElementById('daily-dashboard').innerHTML += 
-				'<canvas id="daily-chart" width="700" height="350"></canvas>'
+				'<canvas id="daily-chart" width="300" height="250"></canvas>'
 
 				// Now we create the chart object, and pass through the data
     			var ctx = document.getElementById('daily-chart').getContext('2d');
@@ -189,15 +197,16 @@ function getDailyUpdate(){
 				            data: [dailyBmi[0], dailyBmi[1], dailyBmi[2], dailyBmi[3], dailyBmi[4], dailyBmi[5], dailyBmi[6], 
 				            dailyBmi[7], dailyBmi[8], dailyBmi[9], dailyBmi[10], dailyBmi[11], dailyBmi[12], dailyBmi[13], dailyBmi[14]],
 				            backgroundColor: [
-				            	'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 
-				            	'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 
-				            	'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 
-				            	'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)', 'rgba(249, 193, 50, 1)'
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)'
 				            ],
 				            borderColor: [
-				            	'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)',
-				            	'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 
-				            	'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)'  
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)'  
 				            ],
 				            borderWidth: 1
 				        }]
@@ -231,36 +240,161 @@ function getDailyUpdate(){
 				            }],
 				            xAxes: [{
 				                ticks: {
-				                	fontColor: 'white'
+				                	fontColor: 'black'
 				                }
 				            }]
 				        }
 				    }
 				});
 
+				// Chart for going back 2 weeks
+    			// First we must clear any chart already there - https://stackoverflow.com/questions/3387427/remove-element-by-id
+    			var removeWeightChart = document.getElementById('weight-chart');
+				removeWeightChart.parentNode.removeChild(removeWeightChart);
+				document.getElementById('weight-dashboard').innerHTML += 
+				'<canvas id="weight-chart" width="300" height="250"></canvas>'
+
+				// Now we create the chart object, and pass through the data
+    			var ctx = document.getElementById('weight-chart').getContext('2d');
+
+				var weightChart = new Chart(ctx, {
+				    type: 'line',
+				    data: {
+				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9], 
+				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3], 
+				        dateRange[2], dateRange[1], dateRange[0]],
+				        datasets: [{
+				        	fill: false,
+				            label: 'Daily Weight',
+				            data: [dailyWeight[0], dailyWeight[1], dailyWeight[2], dailyWeight[3], dailyWeight[4], dailyWeight[5], dailyWeight[6], 
+				            dailyWeight[7], dailyWeight[8], dailyWeight[9], dailyWeight[10], dailyWeight[11], dailyWeight[12], dailyWeight[13], dailyWeight[14]],
+				            backgroundColor: [
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)'
+				            ],
+				            borderColor: [
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)'  
+				            ],
+				            borderWidth: 1
+				        }]
+				    },
+				    options: {
+				    	title: {
+				            display: true,
+				            fontSize: 20,
+				            fontColor: 'black',
+				            text: 'Daily Weight'
+        				},
+				    	legend: {
+				            labels: {
+				                fontColor: 'black'
+				            }
+				        },
+				        scales: {
+				            yAxes: [{
+				                ticks: {
+				                	fontColor: 'black',
+				                    beginAtZero: true,
+				                    // Found the follow splitting function for chart.js here:
+				                    // https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
+				                    userCallback: function(value, index, values) { 
+								        value = value.toString();
+								        value = value.split(/(?=(?:...)*$)/);
+								        value = value.join(',');
+								        return value;
+    								}
+				                }
+				            }],
+				            xAxes: [{
+				                ticks: {
+				                	fontColor: 'black'
+				                }
+				            }]
+				        }
+				    }
+				});
+
+				// Chart for going back 2 weeks
+    			// First we must clear any chart already there - https://stackoverflow.com/questions/3387427/remove-element-by-id
+    			var removeHeightChart = document.getElementById('height-chart');
+				removeHeightChart.parentNode.removeChild(removeHeightChart);
+				document.getElementById('height-dashboard').innerHTML += 
+				'<canvas id="height-chart" width="300" height="250"></canvas>'
+
+				// Now we create the chart object, and pass through the data
+    			var ctx = document.getElementById('height-chart').getContext('2d');
+
+				var heightChart = new Chart(ctx, {
+				    type: 'line',
+				    data: {
+				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9], 
+				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3], 
+				        dateRange[2], dateRange[1], dateRange[0]],
+				        datasets: [{
+				        	fill: false,
+				            label: 'Daily Height',
+				            data: [dailyHeight[0], dailyHeight[1], dailyHeight[2], dailyHeight[3], dailyHeight[4], dailyHeight[5], dailyHeight[6], 
+				            dailyHeight[7], dailyHeight[8], dailyHeight[9], dailyHeight[10], dailyHeight[11], dailyHeight[12], dailyHeight[13], dailyHeight[14]],
+				            backgroundColor: [
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)'
+				            ],
+				            borderColor: [
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)'  
+				            ],
+				            borderWidth: 1
+				        }]
+				    },
+				    options: {
+				    	title: {
+				            display: true,
+				            fontSize: 20,
+				            fontColor: 'black',
+				            text: 'Daily Height'
+        				},
+				    	legend: {
+				            labels: {
+				                fontColor: 'black'
+				            }
+				        },
+				        scales: {
+				            yAxes: [{
+				                ticks: {
+				                	fontColor: 'black',
+				                    beginAtZero: true,
+				                    // Found the follow splitting function for chart.js here:
+				                    // https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
+				                    userCallback: function(value, index, values) { 
+								        value = value.toString();
+								        value = value.split(/(?=(?:...)*$)/);
+								        value = value.join(',');
+								        return value;
+    								}
+				                }
+				            }],
+				            xAxes: [{
+				                ticks: {
+				                	fontColor: 'black'
+				                }
+				            }]
+				        }
+				    }
+				});
 				
 
 
 	    	} else {
 	      		console.error(req.statusText);
-	      		// With a bad request, or no data available, we append that message to the box
-    			var removeChart = document.getElementById('daily-chart');
-				removeChart.parentNode.removeChild(removeChart);
-				document.getElementById('daily-dashboard').innerHTML += 
-				'<canvas id="daily-chart" width="700" height="350"></canvas>'
-				var ctx = document.getElementById('daily-chart').getContext('2d');
-
-				var predChart = new Chart(ctx, {
-					options: {
-				    	title: {
-				            display: true,
-				            fontSize: 20,
-				            fontColor: 'white',
-				            text: 'No Data Available'
-				        }
-				    }
-				});
-
 	    	}
 	  	}
 	};
