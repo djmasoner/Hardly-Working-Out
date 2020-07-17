@@ -194,6 +194,12 @@ app.get('/get_daily_update', function(req, res){
   };
 });
 
+app.get('/view_exercises', function(req, res){
+  pool.query("SELECT * FROM Exercises", function(err, rows, fields){
+    res.send(rows);
+  });
+});
+
 app.get('/', function(req, res){
   // If the user is logged in, redirect to welcome page
   if (req.session.userData) {
@@ -229,8 +235,13 @@ app.get('/login', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
-app.get('/workouts', function(req, res){
-  var path = 'workouts.html';
+app.get('/build_workouts', function(req, res){
+  var path = 'build_workouts.html';
+  res.sendFile(path, {root: './public'})
+})
+
+app.get('/workouts_completed', function(req, res){
+  var path = 'workouts_completed.html';
   res.sendFile(path, {root: './public'})
 })
 
