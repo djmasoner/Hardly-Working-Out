@@ -1,7 +1,7 @@
 // Submit buttons
 document.getElementById("submitForm").addEventListener("click", createProfile);
 
-// This function pulls the name and email from the submit form, creates a JSON,
+// This function pulls info from the submit form, creates a JSON,
 // and sends the object to the server where it is pushed to an array.
 // An alert happens if it was a success
 function createProfile(){
@@ -58,22 +58,4 @@ function createProfile(){
       }});
 
     req.send(JSON.stringify(formObject));
-
-  // // Creates the redirect response
-  //   var req2 = new XMLHttpRequest();
-  //   req2.open("GET", 'http://localhost:3000/welcome', true);
-  //   req2.withCredentials = false;
-  //   req.onload = function (e) {
-  //       if (req2.readyState === 4) {
-  //         if (req2.status === 200) {
-  //           console.log('Redirect Welcome')
-  //         } else {
-  //           console.error(req2.statusText);
-  //         }
-  //       }
-  //   };
-  //   req.onerror = function (e) {
-  //     console.error(req.statusText);
-  //   };
-  //   req.send(null);
 };

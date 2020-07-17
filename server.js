@@ -121,7 +121,8 @@ app.post('/create', function(req, res){
                   console.log(err)
                 };
                 if (result) {
-                  res.send('Success');
+                  // Not currently working - workaround exists on the front end
+                  res.redirect('/login');
                 };
               }
             );
@@ -162,7 +163,15 @@ app.post('/daily_update', function(req, res){
             console.log(err)
           };
           if (result) {
-            res.send('Success');
+            pool.query("UPDATE user SET weight=?, height=?, bmi=? WHERE username=? ",
+              [req.body.weight, req.body.height, req.body.bmi, req.session.userData], function(err, result){
+                if (err) {
+                  console.log(err)
+                };
+                if (result) {
+                  res.send('Success');
+                };
+            });
           };
         }
       );
