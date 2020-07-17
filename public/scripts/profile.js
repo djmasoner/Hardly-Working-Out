@@ -72,18 +72,16 @@ function dailyUpdate(){
     var height = document.getElementById('heightInput').value; 
     var weight = document.getElementById('weightInput').value; 
     var bmi = (weight / (height**2)) * 703;
-    var today = new Date();
+    var day = new Date();
+    day = document.getElementById('dateInput').value;
 
-	today.setDate(today.getDate());
-	today = today.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }); 
-
-    inputArray = [height, weight, bmi, today];
+    inputArray = [height, weight, bmi, day];
 
     // Primitive error checking to make sure all the inputs are present (not the best but it works since html required isn't working)
     for (var i = 0, length = inputArray.length; i < length; i++) {
       if(inputArray[i] == "") {
         alert("Please fill out all update fields")
-        break;
+        return;
       }
     }
 
@@ -92,7 +90,7 @@ function dailyUpdate(){
         "height": height,
         "weight": weight,
         "bmi": bmi,
-        "date": today
+        "date": day
     };
 
     req.open('POST', 'http://localhost:3000/daily_update', true);
