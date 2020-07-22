@@ -96,7 +96,49 @@ function viewExercises(){
 
 function buildWorkout(){
     event.preventDefault();
-    alert('Workout Built! Let\'s get Moving!');
+    
+    // Figure out the grabbing of workouts later
+    var table = document.getElementById("exerciseBody");
+	for (var i = 0, row; row = table.rows[i]; i++) {
+	   //rows would be accessed using the "row" variable assigned in the for loop
+		for (var j = 0, col; col = row.cells[j]; j++) {
+	   		console.log(row.cells[j]);
+	     //columns would be accessed using the "col" variable assigned in the for loop
+	   }  
+	}
+
+	var exerciseArray = [];
+	var exerciseObject1 = new Object();
+	var exerciseObject2 = new Object();
+    
+    exerciseObject1 = {
+        "id": "SU",
+        "sets": 3
+    };
+    exerciseObject2 = {
+        "id": "PU",
+        "sets": 3
+    };
+
+    exerciseArray = [exerciseObject1, exerciseObject2];
+
+    var localUrl = 'http://localhost:3000/begin_workout';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/begin_workout';
+    var req = new XMLHttpRequest();
+    //req.open('POST', flipUrl, true);
+    req.open('POST', localUrl, true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load',function(){
+      if(req.status >= 200 && req.status < 400){
+    	
+
+      } else {
+        console.log("Error in network request: " + req.statusText);
+      }});
+
+    req.send(JSON.stringify(exerciseArray));
+
+
 };
 
 viewExercises();

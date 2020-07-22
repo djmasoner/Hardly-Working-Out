@@ -220,6 +220,19 @@ app.get('/profile', function(req, res){
   }
 });
 
+app.post('/begin_workout', function(req, res){
+    console.log(req.body);
+    req.session.newWorkout = req.body;
+    res.send('success');
+});
+
+app.get('/do_workout', function(req, res){
+  res.send(req.session.newWorkout);
+  // Query to the DB to pull all the workout information, then send it
+
+
+});
+
 app.get('/welcome', function(req, res){
   var path = 'welcome.html';
   res.sendFile(path, {root: './public'});
@@ -242,6 +255,11 @@ app.get('/build_workouts', function(req, res){
 
 app.get('/workouts_completed', function(req, res){
   var path = 'workouts_completed.html';
+  res.sendFile(path, {root: './public'})
+})
+
+app.get('/test_workout', function(req, res){
+  var path = 'test_workout.html';
   res.sendFile(path, {root: './public'})
 })
 
