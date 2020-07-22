@@ -9,8 +9,8 @@ function getProfile(){
 	var localUrl = 'http://localhost:3000/display_profile';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/display_profile';
 
-    req.open('GET', flipUrl, true);
-    //req.open('GET', localUrl, true);
+    //req.open('GET', flipUrl, true);
+    req.open('GET', localUrl, true);
 	req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {
@@ -101,8 +101,8 @@ function dailyUpdate(){
     var localUrl = 'http://localhost:3000/display_profile';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/display_profile';
 
-    req.open('POST', flipUrl, true);
-    //req.open('POST', localUrl, true);
+    //req.open('POST', flipUrl, true);
+    req.open('POST', localUrl, true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
