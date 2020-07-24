@@ -137,7 +137,8 @@ function buildWorkout(){
       }});
 
     req.send(JSON.stringify(exerciseArray));
-
+	
+	window.location.href = "/workouts_completed";
 
 };
 
