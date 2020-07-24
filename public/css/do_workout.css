@@ -35,23 +35,64 @@
 }
 
 .exercises {
-
+    padding: 20px;
     display: inline-block;
     width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 
 .exercise-content {
-    width: 95%;
+    width: 88%;
     float: right;
     display: inline-flex;
     border-color: coral;
     background-color: lightcoral;
-    border-radius: 5px;
+    border-radius: 20px;
     border: 1px solid;
+    position: relative;
+    padding: 5px;
+    align-items: center;
 }
 
 .number {
     width: auto;
-    display: inline-flex
+    display: inline-flex;
+}
+
+.exercise-content:before {
+    content: "";
+    display: block;
+    width: 15px;
+    height: 2px;
+    position: absolute;
+    background-color: black;
+    left: -25px;
+    top: 50%;
+}
+
+.complete-btn {
+    width: 40px;
+    height: 40px;
+    display: block;
+    border-radius: 50%;
+    border: 1px solid;
+    float: right;
+}
+
+.more {
+    border: 1px solid;
+    border-radius: 20px;
+    margin: 10px;
+
+}
+
+.skip {
+    border-radius: 200px;
+    border: 1px solid;
+}
+
+.right-btn {
+    float: right;
 }
