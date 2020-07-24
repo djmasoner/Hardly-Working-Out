@@ -8,6 +8,7 @@
 	  <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/workoutstyle.css" media="screen">
     <link rel="stylesheet" href="css/welcomestyle.css" media="screen">
+    <link rel="stylesheet" href="css/do_workout.css" media="screen">
     <title>Do a Workout</title>
   </head>
 
@@ -35,7 +36,55 @@
       </nav>
     </div>
 </header>
+
+
+  <div id="progress-display">
+    <svg id="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <g id="timer-circle">
+        <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45" />
+        <path
+        id="time-remaining"
+        stroke-dasharray="283"
+        class="base-timer__path-remaining"
+        d="
+          M 50, 50
+          m -45, 0
+          a 45,45 0 1,0 90,0
+          a 45,45 0 1,0 -90,0
+        "
+      ></path>
+      </g>
+    </svg>
+    <div id="time">
+    </div>
+  </div>
+
+  <!--Should this be a form element?-->
+
+  <div id="workout-display">
+    <!--Use JS to place exercises inside of divs with class="exercises" for styling in this div-->
+    <div class="exercises">
+      <div class="number">
+        <button id="complete">1</button>
+      </div>
+      <div class="exercise-content">
+        Sit Ups 
+        <button id="skip" class="right-btn">Skip</button>
+        <button id="more" class="right-btn">More</button>
+      </div>
+    </div>
+  </div>
+
+
+
     <button id="doWorkout">Test workout</button>
+    
+    <div id="timer-controls">
+      <button id="start">Start Workout</button>
+      <button id="pause">Pause Workout</button>
+      <button id="end">End Workout</button>
+    </div>
+
 </body>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

@@ -1,0 +1,57 @@
+#progress-display {
+    position: relative;
+    height: 300px;
+    width: 300px;
+}
+
+#timer-svg {
+    fill: none;
+    stroke: none;
+}
+
+#timer-circle {
+    stroke-width: 5px;
+    stroke:black;
+}
+
+#time {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+}
+
+#time-remaining {
+    stroke: blue;
+    stroke-width: 5px;
+    stroke-linecap: round;
+    transform: rotate(90deg);
+    transform-origin: center;
+    transition: 1s linear all;
+}
+
+.exercises {
+
+    display: inline-block;
+    width: 100%;
+}
+
+
+.exercise-content {
+    width: 95%;
+    float: right;
+    display: inline-flex;
+    border-color: coral;
+    background-color: lightcoral;
+    border-radius: 5px;
+    border: 1px solid;
+}
+
+.number {
+    width: auto;
+    display: inline-flex
+}
