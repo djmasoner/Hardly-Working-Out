@@ -263,6 +263,11 @@ app.get('/test_workout', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
+app.get('/working_out', function(req, res){
+  var path = 'working_out.html';
+  res.sendFile(path, {root: './public'})
+})
+
 app.get('/view_workout', function(req, res){
   pool.query("SELECT * FROM Generic Workouts Table WHERE ID=" + req.body.name), function(err, rows, fields){
     res.send(rows);;
