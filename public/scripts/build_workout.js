@@ -48,7 +48,7 @@ function viewExercises(){
 	    	var exerciseSelect = document.createElement('input');
 				exerciseSelect.type = "checkbox";
 				exerciseSelect.name = data[i].ID;
-				exerciseSelect.value = data[i].ID;
+				exerciseSelect.checked = false;
 				exerciseSelect.id = data[i].ID;
 
 			// Create the # of sets input
@@ -97,31 +97,36 @@ function viewExercises(){
 function buildWorkout(){
     event.preventDefault();
     
-    // Figure out the grabbing of workouts later
-    var table = document.getElementById("exerciseBody");
-	for (var i = 0, row; row = table.rows[i]; i++) {
-	   //rows would be accessed using the "row" variable assigned in the for loop
-		for (var j = 0, col; col = row.cells[j]; j++) {
-	   		console.log(row.cells[j]);
-	     //columns would be accessed using the "col" variable assigned in the for loop
-	   }  
+    // Counter for the number of rows selected
+    var exerciseCount = 0;
+    var exerciseArray = [];
+
+    // Grabs the selected rows for building a workout
+    var t = document.getElementById("exerciseTable");
+	for (var i = 1, row; row = t.rows[i]; i++) {
+		//var t = document.getElementById("table"), // This have to be the ID of your table, not the tag
+    	d = t.getElementsByTagName("tr")[i],
+    	
+    	r1 = d.getElementsByTagName("td")[8];
+    	r2 = d.getElementsByTagName("td")[9];
+	   		if (r1.children[0].checked == true) {
+	   			var exerciseObject = new Object();
+	   			if (r2.children[0].value == "") {
+	   				alert('Please specify a number of sets');
+	   				return;
+	   			};
+	   			exerciseObject = {
+			        "id": r1.children[0].id,
+			        "sets": r2.children[0].value
+			    };
+			    exerciseArray.push(exerciseObject);
+	   		};
 	}
-
-	var exerciseArray = [];
-	var exerciseObject1 = new Object();
-	var exerciseObject2 = new Object();
-    
-    exerciseObject1 = {
-        "id": "SU",
-        "sets": 3
-    };
-    exerciseObject2 = {
-        "id": "PU",
-        "sets": 3
-    };
-
-    exerciseArray = [exerciseObject1, exerciseObject2];
-
+	if (exerciseArray.length == 0) {
+		alert("You didn't select any exercises!");
+		return;
+	};
+	console.log(exerciseArray);
     var localUrl = 'http://localhost:3000/begin_workout';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/begin_workout';
     var req = new XMLHttpRequest();
@@ -138,7 +143,7 @@ function buildWorkout(){
 
     req.send(JSON.stringify(exerciseArray));
 	
-	window.location.href = "/workouts_completed";
+	window.location.href = "/test_workout";
 
 };
 

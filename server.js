@@ -221,16 +221,32 @@ app.get('/profile', function(req, res){
 });
 
 app.post('/begin_workout', function(req, res){
-    console.log(req.body);
     req.session.newWorkout = req.body;
     res.send('success');
 });
 
 app.get('/do_workout', function(req, res){
-  res.send(req.session.newWorkout);
-  // Query to the DB to pull all the workout information, then send it
+  var returnArray = [];
 
+  for (var i = 0; i < req.session.newWorkout.length; i++) {
 
+    function workoutsDb(id){
+    // SQL query requires string to be in "double" quotes
+      //pool.query('SELECT * FROM Exercises WHERE Id = "'+req.session.newWorkout[i].id+'"', function(err, rows, fields){
+      pool.query('SELECT * FROM Exercises WHERE Id = "'+id+'"', function(err, rows, fields){
+        return rows[0];
+      });
+    };
+    var returnRow = workoutsDb(req.session.newWorkout[i].id);
+    console.log(returnRow);
+    var exerciseReturnObject = new Object();
+    exerciseReturnObject = {
+        sets: req.session.newWorkout[i].sets,
+        exercise: returnRow
+    };
+    returnArray.push(exerciseReturnObject);
+  };
+  res.send(returnArray);
 });
 
 app.get('/welcome', function(req, res){
