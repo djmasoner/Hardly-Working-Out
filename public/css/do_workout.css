@@ -96,4 +96,9 @@
 
 .right-btn {
     float: right;
+    justify-self: flex-end;
+}
+
+.exercise-reps, .exercise-name {
+    padding: 10px;
 }
