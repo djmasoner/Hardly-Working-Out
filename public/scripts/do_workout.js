@@ -1,5 +1,4 @@
-// Submit button for building a workout
-document.getElementById("doWorkout").addEventListener("click", displayExercise);
+// Timer buttons
 document.getElementById("start").addEventListener("click", startTimer);
 document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("end").addEventListener("click", endTimer);
@@ -67,7 +66,7 @@ function displayExercise() {
 	  	if (req.readyState === 4) {
 	    	if (req.status === 200) {
 
-	    	// SQL Data returned from server
+	    	// SQL Data returned from server - includes an array of exercise objects
             var data = JSON.parse(req.responseText);
 			console.log(data);
 			
@@ -132,3 +131,5 @@ function createHTML() {
 for (i=0; i<5; i++) {
 	createHTML();
 }
+// Calls display exercise function to grab all of the exercises selected
+displayExercise();

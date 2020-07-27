@@ -226,27 +226,22 @@ app.post('/begin_workout', function(req, res){
 });
 
 app.get('/do_workout', function(req, res){
-  var returnArray = [];
-
-  for (var i = 0; i < req.session.newWorkout.length; i++) {
-
-    function workoutsDb(id){
-    // SQL query requires string to be in "double" quotes
-      //pool.query('SELECT * FROM Exercises WHERE Id = "'+req.session.newWorkout[i].id+'"', function(err, rows, fields){
-      pool.query('SELECT * FROM Exercises WHERE Id = "'+id+'"', function(err, rows, fields){
-        return rows[0];
-      });
+  returnArray = [];
+  pool.query('SELECT * FROM Exercises', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      for (var j = 0; j < req.session.newWorkout.length; j++) {
+        if (rows[i].ID == req.session.newWorkout[j].id) {
+          var exerciseReturnObject = new Object();
+          exerciseReturnObject = {
+            "exercise": rows[i],
+            "sets": req.session.newWorkout[j].sets
+          };
+          returnArray.push(exerciseReturnObject);
+        };
+      };
     };
-    var returnRow = workoutsDb(req.session.newWorkout[i].id);
-    console.log(returnRow);
-    var exerciseReturnObject = new Object();
-    exerciseReturnObject = {
-        sets: req.session.newWorkout[i].sets,
-        exercise: returnRow
-    };
-    returnArray.push(exerciseReturnObject);
-  };
-  res.send(returnArray);
+    res.send(returnArray);
+  });
 });
 
 app.get('/welcome', function(req, res){
