@@ -103,7 +103,20 @@ function createHTML() {
 	// Creating the span to contain the exercise info
 	let newSpan = document.createElement("span");
 	newSpan.className = "exercise-content";
-	// Add text content here to display the workout
+
+	// Adding text content to the display
+	let exerciseName = document.createElement("div");
+	exerciseName.className = "exercise-name";
+	exerciseName.textContent = "Hi" //Replace with exercise variable
+	newSpan.appendChild(exerciseName)
+
+	// Adding reps content to the display
+	let exerciseReps = document.createElement("div");
+	exerciseReps.className = "exercise-reps";
+	exerciseReps.textContent = "7" + " Reps";
+	newSpan.appendChild(exerciseReps)
+
+	// 
 
 	// Creating the more button
 	let moreBtn = document.createElement("button");
@@ -132,3 +145,6 @@ function createHTML() {
 for (i=0; i<5; i++) {
 	createHTML();
 }
+
+// Use JS to assign a completed or skipped value to the HTML element
+ 
