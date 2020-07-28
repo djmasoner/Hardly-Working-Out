@@ -6,6 +6,9 @@ document.getElementById("end").addEventListener("click", endTimer);
 // We'll eventually set this to use the total time of a workout. 
 var timeInterval = 1000;
 
+var completeArray = [];
+var skipArray = [];
+
 function doWorkout(){
     var req = new XMLHttpRequest();
     var localUrl = 'http://localhost:3000/do_workout';
@@ -102,7 +105,20 @@ function displayExercise(num, name, reps, sets, points) {
 	// Creating the completion number button.
 	let completeBtn = document.createElement("button");
 	completeBtn.className = "complete-btn";
-	completeBtn.textContent = num + 1;
+  completeBtn.textContent = num + 1;
+  completeBtn.id = num;
+
+  // Adds an event listener to the complete buttons to add their value to the array
+  // and add a class of done to the button.
+  completeBtn.addEventListener('click', function() {
+    if (completeArray.includes(this.getAttribute('id')) == false && skipArray.includes(this.getAttribute('id')) == false) {
+      completeArray.push(this.getAttribute('id'));
+      this.className = this.className + " done";
+      console.log(completeArray);
+    } else {
+      console.log(completeArray);
+    };
+  });
 	// Add button ID and inner text here.
 	divOne.appendChild(completeBtn)
 
@@ -142,9 +158,23 @@ function displayExercise(num, name, reps, sets, points) {
 
 	// Creating the skip button
 	let skipBtn = document.createElement("button");
-	skipBtn.id = "skip";
+	skipBtn.id = num;
 	skipBtn.innerText = "Skip";
-	skipBtn.className = "skip right-btn"; 
+  skipBtn.className = "skip right-btn"; 
+  
+  // Adds an event listener to the complete buttons to add their value to the array
+  // and add a class of done to the button.
+  skipBtn.addEventListener('click', function() {
+    if (completeArray.includes(this.getAttribute('id')) == false && skipArray.includes(this.getAttribute('id')) == false) {
+      let btnId = this.getAttribute('id');
+      skipArray.push(btnId);
+      let compId = document.getElementById(btnId);
+      compId.className = compId.className + " skipped";
+      console.log(skipArray);
+    } else {
+      console.log(skipArray);
+    };
+  });
 	newSpan.appendChild(skipBtn);
 
 	let divTwo = document.createElement("div");

@@ -102,3 +102,11 @@
 .exercise-reps, .exercise-name {
     padding: 10px;
 }
+
+.done {
+    background-color: cyan;
+}
+
+.skipped {
+    background-color: yellow;
+}
