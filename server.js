@@ -200,6 +200,15 @@ app.get('/view_exercises', function(req, res){
   });
 });
 
+app.get('/view_competitors', function(req, res){
+  pool.query('SELECT * FROM user', function(err, rows, fields){
+    var competitorsArray = [];
+    competitorsArray.push(req.session.userData);
+    competitorsArray.push(rows);
+    res.send(competitorsArray);
+  });
+});
+
 app.get('/', function(req, res){
   // If the user is logged in, redirect to welcome page
   if (req.session.userData) {
@@ -246,6 +255,11 @@ app.get('/do_workout', function(req, res){
 
 app.get('/welcome', function(req, res){
   var path = 'welcome.html';
+  res.sendFile(path, {root: './public'});
+});
+
+app.get('/challenges', function(req, res){
+  var path = 'challenges.html';
   res.sendFile(path, {root: './public'});
 });
 
