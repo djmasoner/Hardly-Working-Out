@@ -1,5 +1,4 @@
 // Submit button for building a workout
-document.getElementById("doWorkout").addEventListener("click", doWorkout);
 document.getElementById("start").addEventListener("click", startTimer);
 document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("end").addEventListener("click", endTimer);
@@ -21,8 +20,9 @@ function doWorkout(){
 	    	if (req.status === 200) {
 
 	    	// SQL Data returned from server
-            var data = JSON.parse(req.responseText);
-            console.log(data);
+			var data = JSON.parse(req.responseText);
+			// console.log(data) -- if we want to see our data returned from the server.
+			unpackData(data);
 		
 	    	} else {
 	      		console.error(req.statusText);
@@ -76,14 +76,85 @@ function endTimer(){
 	display.text = "Workout ended";
 };
 
-function displayExercise(rows) {
+function unpackData(package) {
+	console.log(package);
+	console.log(Object.keys(package));
+	// unpacks the data and acts as a repeater function for displayExercise
+	for (i=0; i<Object.keys(package).length; i++) {
+		let exerciseName = package[i].exercise.Name;
+		let exerciseReps = package[i].exercise.Reps;
+		let exerciseSets = package[i].sets;
+		let exercisePoints = package[i].exercise.Points;
+		console.log(exerciseName, exerciseReps, exerciseSets, exercisePoints)
+		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints);
+	};
+};
+
+function displayExercise(num, name, reps, sets, points) {
+
+
 	// Pass this the info from the DB, it'll create divs with the appropriate styling
 	// and add them to the DOM.
 	let display = 	document.getElementById("workout-display");
-	let newDiv = document.createElement("div");
-	newDiv.className = "exercises";
+	let divOne = document.createElement("div");
+	divOne.className = "number";
+
+	// Creating the completion number button.
+	let completeBtn = document.createElement("button");
+	completeBtn.className = "complete-btn";
+	completeBtn.textContent = num + 1;
+	// Add button ID and inner text here.
+	divOne.appendChild(completeBtn)
+
+	// Creating the span to contain the exercise info
+	let newSpan = document.createElement("span");
+	newSpan.className = "exercise-content";
+
+	// Adding name content to the display
+	let exerciseName = document.createElement("div");
+	exerciseName.className = "exercise-name";
+	exerciseName.textContent = name;
+	newSpan.appendChild(exerciseName);
+
+	// Adding reps content to the display
+	let exerciseReps = document.createElement("div");
+	exerciseReps.className = "exercise-reps";
+	exerciseReps.textContent = reps + " Reps";
+	newSpan.appendChild(exerciseReps);
+
+	// Adding sets content to the display
+	let exerciseSet = document.createElement("div");
+	exerciseSet.className = "exercise-reps";
+	if (sets == 1) {
+		exerciseSet.textContent = sets + " Set";
+	}
+	if (sets != 1) {
+		exerciseSet.textContent = sets + " Sets";
+	}
+	newSpan.appendChild(exerciseSet);
+
+	// Creating the more button
+	let moreBtn = document.createElement("button");
+	moreBtn.id = "more";
+	moreBtn.innerText = "More";
+	moreBtn.className = "more right-btn"; 
+	newSpan.appendChild(moreBtn);
+
+	// Creating the skip button
+	let skipBtn = document.createElement("button");
+	skipBtn.id = "skip";
+	skipBtn.innerText = "Skip";
+	skipBtn.className = "skip right-btn"; 
+	newSpan.appendChild(skipBtn);
+
+	let divTwo = document.createElement("div");
+	divTwo.className = "exercises";
+
 
 	// insert information here at a later time... not feeling it rn.
-
-	display.appendChild(newDiv);
+	divTwo.appendChild(divOne);
+	divTwo.appendChild(newSpan);
+	display.appendChild(divTwo);
 };
+
+doWorkout();
