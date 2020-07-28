@@ -3,9 +3,9 @@ document.getElementById("start").addEventListener("click", startTimer);
 document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("end").addEventListener("click", endTimer);
 
-// We'll eventually set this to use the total time of a workout. 
+// We'll eventually set this to use the total time of a workout.
 var timeInterval = 1000;
-
+var workoutTime = 0;
 var completeArray = [];
 var skipArray = [];
 
@@ -16,7 +16,7 @@ function doWorkout(){
 
     //req.open('GET', flipUrl, true);
     req.open('GET', localUrl, true);
-    
+
     req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {
@@ -26,7 +26,8 @@ function doWorkout(){
 			var data = JSON.parse(req.responseText);
 			// console.log(data) -- if we want to see our data returned from the server.
 			unpackData(data);
-		
+      timeData(data);
+
 	    	} else {
 	      		console.error(req.statusText);
 	    	}
@@ -41,7 +42,7 @@ function doWorkout(){
 function startTimer(){
 	// Moving forward I'll need the aggregate time of a workout which will be set to start time
 	// I'll need to set the repeater off of start time.
-	// Also seems to be attached to sessions? It certainly persists. Is this bad? 
+	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Get the start time and display element
 	var startTime = new Date("Jul 25, 2021 16:37:52").getTime();
@@ -62,7 +63,7 @@ function startTimer(){
 		}
 		// Sets the text content to the display element
 		display.textContent = min + ":" + sec;
-		
+
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (min <= 0 && sec <= 0) {
@@ -73,7 +74,7 @@ function startTimer(){
 };
 
 function endTimer(){
-	// can't access due to scope... yay... 
+	// can't access due to scope... yay...
 	timeInterval = null;
 	var display = document.getElementById("time");
 	display.text = "Workout ended";
@@ -91,6 +92,17 @@ function unpackData(package) {
 		console.log(exerciseName, exerciseReps, exerciseSets, exercisePoints)
 		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints);
 	};
+};
+
+function timeData(package) {
+  for (i=0; i<Object.keys(package).length; i++) {
+    let exerciseSets = package[i].sets;
+    let exerciseTime = package[i].Time;
+    var totalTime = exerciseSets * exerciseTime;
+    typeof(exerciseSets);
+    workoutTime = workoutTime + totalTime;
+  };
+    console.log("This is the workout time: " + workoutTime);
 };
 
 function displayExercise(num, name, reps, sets, points) {
@@ -153,15 +165,15 @@ function displayExercise(num, name, reps, sets, points) {
 	let moreBtn = document.createElement("button");
 	moreBtn.id = "more";
 	moreBtn.innerText = "More";
-	moreBtn.className = "more right-btn"; 
+	moreBtn.className = "more right-btn";
 	newSpan.appendChild(moreBtn);
 
 	// Creating the skip button
 	let skipBtn = document.createElement("button");
 	skipBtn.id = num;
 	skipBtn.innerText = "Skip";
-  skipBtn.className = "skip right-btn"; 
-  
+  skipBtn.className = "skip right-btn";
+
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   skipBtn.addEventListener('click', function() {
