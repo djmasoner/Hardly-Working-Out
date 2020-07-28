@@ -18,3 +18,7 @@ tr:nth-child(even) {
 body {
     background-color: #cccccc;
     }
+
+    body {
+        background-image: url("gym.jpg");
+    }
