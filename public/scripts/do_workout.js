@@ -45,17 +45,19 @@ function startTimer(){
 	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Get the start time and display element
-	var startTime = new Date("Jul 25, 2021 16:37:52").getTime();
+	var startTime = workoutTime * 60;
 	var display = document.getElementById("time");
 
 	// Repeater function which calculates the remaining time
 	const countDown = setInterval(function() {
-		var rightNow = new Date().getTime();
+		var rightNow = 1;
 		var timeLeft = startTime - rightNow;
+    var mil = timeLeft * 1000;
+    startTime = startTime - rightNow;
 
 		//Calculate minutes and seconds
-		var min = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-		var sec = Math.floor((timeLeft % (1000 * 60)) / (1000));
+		var min = Math.floor((mil % (1000 * 60 * 60)) / (1000 * 60));
+		var sec = Math.floor((mil % (1000 * 60)) / (1000));
 
 		// If sec is less than 10 we add a zero to the display otherwise we get 7:9, 7:8
 		if (sec < 10) {
@@ -66,7 +68,7 @@ function startTimer(){
 
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
-		if (min <= 0 && sec <= 0) {
+		if (timeLeft <= 0) {
 			clearInterval(countDown);
 			display.textContent = "Workout Complete!";
 		}
@@ -96,10 +98,10 @@ function unpackData(package) {
 
 function timeData(package) {
   for (i=0; i<Object.keys(package).length; i++) {
-    let exerciseSets = package[i].sets;
-    let exerciseTime = package[i].Time;
-    var totalTime = exerciseSets * exerciseTime;
-    typeof(exerciseSets);
+    let exerciseSets = Number(package[i].sets);
+    let exerciseTime = package[i].exercise.Time;
+    let totalTime = exerciseSets * exerciseTime;
+
     workoutTime = workoutTime + totalTime;
   };
     console.log("This is the workout time: " + workoutTime);
