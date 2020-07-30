@@ -1,109 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8">
-	<title>Create Your Profile</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Required meta tags-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Colorlib Templates">
+    <meta name="author" content="Colorlib">
+    <meta name="keywords" content="Colorlib Templates">
+
+    <!-- Title Page-->
+    <title>Au Register Forms by Colorlib</title>
+
+    <!-- Icons font CSS-->
+    <link href="vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all">
+    <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
+    <!-- Font special for pages-->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Vendor CSS-->
+    <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
+    <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+
+    <!-- Main CSS-->
+    <link href="css/createstyle.css" rel="stylesheet" media="all">
 </head>
+
 <body>
-	<form class="form-horizontal w-75 mx-auto">
-		<fieldset>
-		
-		<!-- Form Name -->
-		<legend>Create A New Account</legend>
-		
-		<!-- Text input-->
+    <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+        <div class="wrapper wrapper--w680">
+            <div class="card card-4">
+                <div class="card-body">
+                    <h2 class="title">Create Profile</h2>
+                    <form method="POST">
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Name</label>
+                                    <input id="nameInput" class="input--style-4" type="text" name="first_name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Age</label>
+                                    <div class="input-group-icon">
+                                        <input id="ageInput" class="input--style-4 js-datepicker" type="text" name="birthday">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Gender</label>
+                                    <div class="p-t-10">
+                                        <label class="radio-container m-r-45">Male
+                                            <input id="Gender-0" type="radio" checked="checked" name="genderInput">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                        <label class="radio-container">Female
+                                            <input id="Gender-1" type="radio" name="genderInput">
+                                            <span class="checkmark"></span>
+                                        </label>
+																				<label class="radio-container m-r-45">Decline to Answer
+																						<input id="Gender-2" type="radio" name="genderInput">
+																						<span class="checkmark"></span>
+																				</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row row-space">
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Height (in inches)</label>
+                                    <input id="heightInput" class="input--style-4" type="email" name="email">
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Weight (in pounds)</label>
+                                    <input id="weightInput" class="input--style-4" type="text" name="phone">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-t-15">
+                            <button id="submitForm" class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Name">Name</label>  
-		  <div class="col-md-4">
-		  <input id="nameInput" name="Name" type="text" placeholder="ex. John Doe" class="form-control input-md" required="">
-			
-		  </div>
-		</div>
-		
-		<!-- Multiple Radios (inline) -->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Gender">Gender</label>
-		  <div class="col-md-4"> 
-			<label class="radio-inline" for="Gender-0">
-			  <input type="radio" name="genderInput" id="Gender-0" value="M">
-			  Male
-			</label> 
-			<label class="radio-inline" for="Gender-1">
-			  <input type="radio" name="genderInput" id="Gender-1" value="F">
-			  Female
-			</label> 
-			<label class="radio-inline" for="Gender-2">
-			  <input type="radio" name="genderInput" id="Gender-2" value="D"  checked="checked">
-			  Decline to Answer
-			</label>
-		  </div>
-		</div>
-		
-		<!-- Text input-->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Age">Age</label>  
-		  <div class="col-md-4">
-		  <input id="ageInput" name="Age" type="number" placeholder="ex. 53" class="form-control input-md" required="">
-		  <span class="help-block">This will be used for fitness calculations such as BMI</span>  
-		  </div>
-		</div>
-		
-		<!-- Button Drop Down -->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Height">Height (in inches)</label>
-		  <div class="col-md-4">
-			<div class="input-group">
-			  <input id="heightInput" name="Height" class="form-control" type="number" required="">
-			  <div class="input-group-btn" id="measurementInput">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				  Units
-				  <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu pull-right">
-				  <li><a href="#">Metric</a></li>
-				  <li><a href="#">Imperial</a></li>
-				</ul>
-			  </div>
-			</div>
-		  </div>
-		</div>
-		
-		<!-- Button Drop Down -->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Weight">Weight</label>
-		  <div class="col-md-4">
-			<div class="input-group">
-			  <input  id="weightInput" name="Weight" class="form-control" placeholder="ex 200" type="number" required="">
-			  <div class="input-group-btn">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				  Units
-				  <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu pull-right">
-				  <li><a href="#">pounds</a></li>
-				  <li><a href="#">kilograms</a></li>
-				</ul>
-			  </div>
-			</div>
-		  </div>
-		</div>
-		
-		<!-- Button -->
-		<div class="form-group">
-		  <label class="col-md-4 control-label" for="Submit">Create Your Account</label>
-		  <div class="col-md-4">
-			<button id="submitForm" name="Submit" class="btn btn-primary" onclick="window.location.href='/welcome';">Submit</button>
-		  </div>
-		</div>
-		
-		</fieldset>
-	</form>
-</body>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <!-- Main JS-->
 <script type="text/javascript" src="scripts/create.js"></script>
+
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+
 </html>
+<!-- end document-->
