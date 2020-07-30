@@ -1,7 +1,6 @@
 // Submit button for building a workout
 document.getElementById("start").addEventListener("click", startTimer);
 document.getElementById("pause").addEventListener("click", startTimer);
-document.getElementById("end").addEventListener("click", endTimer);
 document.getElementById("end").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
@@ -45,40 +44,55 @@ function startTimer(){
 
 	// Get the start time and display element
 	var currentTime = workoutTime * 60;
-	var display = document.getElementById("time");
+  var display = document.getElementById("time");
 
 	// Repeater function which calculates the remaining time
-	const countDown = setInterval(function() {
+	const countDown = window.setInterval(function() {
 		var oneSecond = 1;
 		var timeLeft = currentTime - oneSecond;
-    var millisecond = timeLeft * 1000;
+    var mil = timeLeft * 1000;
     currentTime = currentTime - oneSecond;
 
 		//Calculate minutes and seconds
-		var min = Math.floor((millisecond % (1000 * 60 * 60)) / (1000 * 60));
-		var sec = Math.floor((millisecond % (1000 * 60)) / (1000));
+		var min = Math.floor((mil % (1000 * 60 * 60)) / (1000 * 60));
+		var sec = Math.floor((mil % (1000 * 60)) / (1000));
 
 		// If sec is less than 10 we add a zero to the display otherwise we get 7:9, 7:8
 		if (sec < 10) {
 			sec = "0" + sec
 		}
 		// Sets the text content to the display element
-		display.textContent = min + ":" + sec;
+    display.textContent = min + ":" + sec;
+    
 
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (timeLeft <= 0) {
 			clearInterval(countDown);
 			display.textContent = "Workout Complete!";
-		}
-	}, 1000);
-};
+    }
 
-function endTimer(){
-	// can't access due to scope... yay...
-	timeInterval = null;
-	var display = document.getElementById("time");
-	display.text = "Workout ended";
+    document.getElementById("pause").addEventListener("click", this.pause)
+    document.getElementById("end").addEventListener("click", this.stop);
+    
+
+    this.pause = function () {
+      savedTime = 0;
+      var state = document.getElementById("pause").getAttribute("value");
+      if (state == "in-progress") {
+        var savedTime = currentTime;
+        clearInterval(countDown)
+      } else {
+        currentTime = savedTime;
+        countDown
+      }
+    };
+
+    this.stop = function () {
+      clearInterval(countDown)
+    };
+
+  }, 1000);
 };
 
 function unpackData(package) {
@@ -200,6 +214,5 @@ function endWorkout () {
   } 
   console.log(completeArray); // Array containing the Ids of completed workouts
 }
-
 
 doWorkout();
