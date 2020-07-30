@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/workoutstyle.css" media="screen">
     <link rel="stylesheet" href="css/welcomestyle.css" media="screen">
     <link rel="stylesheet" href="css/do_workout.css" media="screen">
-    <!--<link rel="stylesheet" href="css/modalstyle.css" media="screen"> -->
+    <link rel="stylesheet" href="css/modalstyle.css" media="screen">
     <title>Do a Workout</title>
   </head>
 
@@ -30,16 +30,31 @@
                   <!-- Submittable form for workout data -->
             <form>
                     <div class="form-group">
-                      <label for="Workout Name">Workout Name</label>
+                        <!-- I don't know how to make the Workout Name auto-update to the currently "finishing" workout-->
+                      <label for="workout_name">Workout Name: </label>
+                      <input type="text" class="form-control" id="workout_name" placeholder="My Workout">
                     </div>
                     <div class="form-group">
-                      <label for="workoutDescription">Workout Description</label>
-                      <input type="text" class="form-control" id="workoutDespcription" placeholder="Your Description here">
+                      <label for="workout_description">Workout Description: </label>
+                      <input type="text" class="form-control" id="workout_description" placeholder="Your Description here">
                     </div>
                     <div class="form-group">
-                      <label for="rating">Rating 1-10</label>
-                      <input type="range" id="rating" name="points" min="1" max="10">
-                      <p class="help-block">1-Terrible, 10-Superb</p>
+                      <label for="rating">Rating 0-10: </label>
+                      <input type="range" id="rating" name="points" min="0" max="10" list="tickmarks">
+
+                      <datalist id="tickmarks">
+                        <option value="0"></option>
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                        <option value="6"></option>
+                        <option value="7"></option>
+                        <option value="8"></option>
+                        <option value="9"></option>
+                        <option value="10"></option>
+                      </datalist>
                     </div>
                     <div class="checkbox">
                       <label>
