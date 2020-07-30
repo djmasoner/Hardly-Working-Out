@@ -5,6 +5,30 @@ document.getElementById("end").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
 var workoutTime = 0;
+var totalPoints = 0;
+
+function calculatePoints(package) {
+	// Extra sets earn extra points
+	for (i=0; i<Object.keys(package).length; i++) {
+		let exerciseSets = Number(package[i].sets);
+		let pointsValue = package[i].exercise.Points;
+		let exercisePoints = exerciseSets * pointsValue;
+	
+		totalPoints = totalPoints + exercisePoints;
+	};
+	displayPoints();
+}
+
+function displayPoints() {
+	let currentPoints = 0;
+
+	// Calculate earned points
+	var completeExercises = document.getElementsByClassName('done');
+	for (i=0; i < completeExercises.length; i++) {
+		currentPoints = currentPoints + Number(completeExercises[i].value); 
+	}; 
+	document.getElementById("points-display").textContent = currentPoints + "/" + totalPoints + " points earned"
+};
 
 
 function doWorkout(){
@@ -24,7 +48,8 @@ function doWorkout(){
 			var data = JSON.parse(req.responseText);
 			// console.log(data) -- if we want to see our data returned from the server.
 			unpackData(data);
-      timeData(data);
+			timeData(data);
+			calculatePoints(data);
 
 	    	} else {
 	      		console.error(req.statusText);
@@ -96,8 +121,6 @@ function startTimer(){
 };
 
 function unpackData(package) {
-	console.log(package);
-	console.log(Object.keys(package));
 	// unpacks the data and acts as a repeater function for displayExercise
 	for (i=0; i<Object.keys(package).length; i++) {
 		let exerciseId = package[i].exercise["ID"];
@@ -105,12 +128,12 @@ function unpackData(package) {
 		let exerciseReps = package[i].exercise.Reps;
 		let exerciseSets = package[i].sets;
 		let exercisePoints = package[i].exercise.Points;
-		console.log(exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId)
 		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId);
 	};
 };
 
 function timeData(package) {
+  // unpacks the data sets the total workout time. 
   for (i=0; i<Object.keys(package).length; i++) {
     let exerciseSets = Number(package[i].sets);
     let exerciseTime = package[i].exercise.Time;
@@ -134,12 +157,14 @@ function displayExercise(num, name, reps, sets, points, id) {
 	completeBtn.className = "complete-btn";
   completeBtn.textContent = num + 1;
   completeBtn.id = id;
+  completeBtn.value = points * sets;
 
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   completeBtn.addEventListener('click', function() {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
-      this.className = this.className + " done";
+	  this.className = this.className + " done";
+	  displayPoints();
 	};
   });
 	// Add button ID and inner text here.
@@ -166,10 +191,12 @@ function displayExercise(num, name, reps, sets, points, id) {
 	exerciseSet.className = "exercise-reps";
 	if (sets == 1) {
 		exerciseSet.textContent = sets + " Set";
+
 	}
 	if (sets != 1) {
 		exerciseSet.textContent = sets + " Sets";
 	}
+	exerciseSet.value = sets;
 	newSpan.appendChild(exerciseSet);
 
 	// Creating the more button
@@ -208,11 +235,18 @@ function displayExercise(num, name, reps, sets, points, id) {
 
 function endWorkout () {
   var completeArray = [];
-  var completeButtons = document.getElementsByClassName('done');
+  var pointsEarned = 0;
+  var completeButtons = document.getElementsByClassName('complete-btn');
   for (i=0; i < completeButtons.length; i++) {
-	  completeArray.push(completeButtons[i].id)
-  } 
-  console.log(completeArray); // Array containing the Ids of completed workouts
+	  if (completeButtons[i].classList.contains("done")) {
+		completeArray.push(completeButtons[i].id);
+		pointsEarned = pointsEarned + Number(completeButtons[i].value);
+	  };
+  } ;
+  var results = Object();
+  results.completedExercises = completeArray;
+  results.points = pointsEarned;
+  console.log(results);
 }
 
 doWorkout();
