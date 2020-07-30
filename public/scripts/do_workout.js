@@ -2,12 +2,11 @@
 document.getElementById("start").addEventListener("click", startTimer);
 document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("end").addEventListener("click", endTimer);
+document.getElementById("end").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
-var timeInterval = 1000;
 var workoutTime = 0;
-var completeArray = [];
-var skipArray = [];
+
 
 function doWorkout(){
     var req = new XMLHttpRequest();
@@ -45,19 +44,19 @@ function startTimer(){
 	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Get the start time and display element
-	var startTime = workoutTime * 60;
+	var currentTime = workoutTime * 60;
 	var display = document.getElementById("time");
 
 	// Repeater function which calculates the remaining time
 	const countDown = setInterval(function() {
-		var rightNow = 1;
-		var timeLeft = startTime - rightNow;
-    var mil = timeLeft * 1000;
-    startTime = startTime - rightNow;
+		var oneSecond = 1;
+		var timeLeft = currentTime - oneSecond;
+    var millisecond = timeLeft * 1000;
+    currentTime = currentTime - oneSecond;
 
 		//Calculate minutes and seconds
-		var min = Math.floor((mil % (1000 * 60 * 60)) / (1000 * 60));
-		var sec = Math.floor((mil % (1000 * 60)) / (1000));
+		var min = Math.floor((millisecond % (1000 * 60 * 60)) / (1000 * 60));
+		var sec = Math.floor((millisecond % (1000 * 60)) / (1000));
 
 		// If sec is less than 10 we add a zero to the display otherwise we get 7:9, 7:8
 		if (sec < 10) {
@@ -72,7 +71,7 @@ function startTimer(){
 			clearInterval(countDown);
 			display.textContent = "Workout Complete!";
 		}
-	}, timeInterval);
+	}, 1000);
 };
 
 function endTimer(){
@@ -87,12 +86,13 @@ function unpackData(package) {
 	console.log(Object.keys(package));
 	// unpacks the data and acts as a repeater function for displayExercise
 	for (i=0; i<Object.keys(package).length; i++) {
+		let exerciseId = package[i].exercise["ID"];
 		let exerciseName = package[i].exercise.Name;
 		let exerciseReps = package[i].exercise.Reps;
 		let exerciseSets = package[i].sets;
 		let exercisePoints = package[i].exercise.Points;
-		console.log(exerciseName, exerciseReps, exerciseSets, exercisePoints)
-		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints);
+		console.log(exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId)
+		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId);
 	};
 };
 
@@ -104,10 +104,9 @@ function timeData(package) {
 
     workoutTime = workoutTime + totalTime;
   };
-    console.log("This is the workout time: " + workoutTime);
 };
 
-function displayExercise(num, name, reps, sets, points) {
+function displayExercise(num, name, reps, sets, points, id) {
 
 
 	// Pass this the info from the DB, it'll create divs with the appropriate styling
@@ -120,18 +119,14 @@ function displayExercise(num, name, reps, sets, points) {
 	let completeBtn = document.createElement("button");
 	completeBtn.className = "complete-btn";
   completeBtn.textContent = num + 1;
-  completeBtn.id = num;
+  completeBtn.id = id;
 
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   completeBtn.addEventListener('click', function() {
-    if (completeArray.includes(this.getAttribute('id')) == false && skipArray.includes(this.getAttribute('id')) == false) {
-      completeArray.push(this.getAttribute('id'));
+    if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       this.className = this.className + " done";
-      console.log(completeArray);
-    } else {
-      console.log(completeArray);
-    };
+	};
   });
 	// Add button ID and inner text here.
 	divOne.appendChild(completeBtn)
@@ -172,22 +167,18 @@ function displayExercise(num, name, reps, sets, points) {
 
 	// Creating the skip button
 	let skipBtn = document.createElement("button");
-	skipBtn.id = num;
+	skipBtn.id = id;
 	skipBtn.innerText = "Skip";
-  skipBtn.className = "skip right-btn";
+    skipBtn.className = "skip right-btn";
 
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   skipBtn.addEventListener('click', function() {
-    if (completeArray.includes(this.getAttribute('id')) == false && skipArray.includes(this.getAttribute('id')) == false) {
+    if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       let btnId = this.getAttribute('id');
-      skipArray.push(btnId);
       let compId = document.getElementById(btnId);
       compId.className = compId.className + " skipped";
-      console.log(skipArray);
-    } else {
-      console.log(skipArray);
-    };
+	};
   });
 	newSpan.appendChild(skipBtn);
 
@@ -200,5 +191,15 @@ function displayExercise(num, name, reps, sets, points) {
 	divTwo.appendChild(newSpan);
 	display.appendChild(divTwo);
 };
+
+function endWorkout () {
+  var completeArray = [];
+  var completeButtons = document.getElementsByClassName('done');
+  for (i=0; i < completeButtons.length; i++) {
+	  completeArray.push(completeButtons[i].id)
+  } 
+  console.log(completeArray); // Array containing the Ids of completed workouts
+}
+
 
 doWorkout();
