@@ -10,22 +10,22 @@ function createProfile(){
     var req = new XMLHttpRequest();
 
     // Input values
-    var name = document.getElementById('nameInput').value; 
-    var height = document.getElementById('heightInput').value; 
-    var weight = document.getElementById('weightInput').value; 
+    var name = document.getElementById('nameInput').value;
+    var height = document.getElementById('heightInput').value;
+    var weight = document.getElementById('weightInput').value;
     var radioInput = document.getElementsByName('genderInput');
     var today = new Date();
 
     today.setDate(today.getDate());
-    today = today.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }); 
+    today = today.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
     for (var i = 0, length = radioInput.length; i < length; i++) {
       if(radioInput[i].checked) {
         var gender = radioInput[i].value
       }
     }
-    var age = document.getElementById('ageInput').value; 
-    var bmi = (weight / (height**2)) * 703; 
+    var age = document.getElementById('ageInput').value;
+    var bmi = (weight / (height**2)) * 703;
 
     inputArray = [name, height, weight, gender, age, bmi, today];
 
@@ -62,4 +62,5 @@ function createProfile(){
       }});
 
     req.send(JSON.stringify(formObject));
+    window.location.href = '/welcome';
 };
