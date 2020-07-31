@@ -5,8 +5,8 @@ function viewCompetitors(){
     var localUrl = 'http://localhost:3000/view_competitors';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/view_competitors';
 
-    //req.open('GET', flipUrl, true);
-    req.open('GET', localUrl, true);
+    req.open('GET', flipUrl, true);
+    //req.open('GET', localUrl, true);
     
     req.withCredentials = false;
 	req.onload = function (e) {

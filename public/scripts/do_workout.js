@@ -45,8 +45,8 @@ function doWorkout(){
     var localUrl = 'http://localhost:3000/do_workout';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/do_workout';
 
-    //req.open('GET', flipUrl, true);
-    req.open('GET', localUrl, true);
+    req.open('GET', flipUrl, true);
+    //req.open('GET', localUrl, true);
 
     req.withCredentials = false;
 	req.onload = function (e) {
@@ -323,8 +323,8 @@ function endWorkout () {
   var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_workout';
   var req = new XMLHttpRequest();
   
-  //req.open('POST', flipUrl, true);
-  req.open('POST', localUrl, true);
+  req.open('POST', flipUrl, true);
+  //req.open('POST', localUrl, true);
   req.setRequestHeader('Content-Type', 'application/json');
   req.addEventListener('load',function(){
     if(req.status >= 200 && req.status < 400){
