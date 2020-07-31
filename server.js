@@ -341,4 +341,4 @@ app.get('/view_workout', function(req, res){
 })
 
 console.log('Express started on port 3000; press Ctrl-C to terminate.');
-http.createServer(app).listen(1344);
+http.createServer(app).listen(3000);
