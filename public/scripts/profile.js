@@ -98,8 +98,10 @@ function dailyUpdate(){
         "date": day
     };
 
-    var localUrl = 'http://localhost:3000/display_profile';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/display_profile';
+    console.log(formObject);
+
+    var localUrl = 'http://localhost:3000/daily_update';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/daily_update';
 
     //req.open('POST', flipUrl, true);
     req.open('POST', localUrl, true);
@@ -138,7 +140,6 @@ function getDailyUpdate(){
 		dateRange.push(trackDay.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }));
 		dateRangeDash.push(trackDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }));
 	};
-	console.log(dateRangeDash);
   	// Creates the response
 	var req = new XMLHttpRequest();
 	var localUrl = 'http://localhost:3000/get_daily_update';
@@ -198,7 +199,6 @@ function getDailyUpdate(){
 
 				// Now we create the chart object, and pass through the data
     			var ctx = document.getElementById('daily-chart').getContext('2d');
-
 				var dailyChart = new Chart(ctx, {
 				    type: 'line',
 				    data: {
