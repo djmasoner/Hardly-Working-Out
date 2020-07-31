@@ -7,6 +7,12 @@ document.getElementById("submit_workout").addEventListener("click", endWorkout);
 var workoutTime = 0;
 var totalPoints = 0;
 
+// Used to determine if the time needed to start on the timer is the beginning time
+// Saved time and current time variables declared
+var beginningTime = true;
+var savedTime;
+var currentTime;
+
 function calculatePoints(package) {
 	// Extra sets earn extra points
 	for (i=0; i<Object.keys(package).length; i++) {
@@ -68,7 +74,11 @@ function startTimer(){
 	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Get the start time and display element
-	var currentTime = workoutTime * 60;
+	if (beginningTime == true) {
+		currentTime = workoutTime * 60;
+	} else {
+		currentTime = savedTime;
+	}
   var display = document.getElementById("time");
 
 	// Repeater function which calculates the remaining time
@@ -100,22 +110,13 @@ function startTimer(){
     document.getElementById("pause").addEventListener("click", this.pause)
     document.getElementById("end").addEventListener("click", this.stop);
 
+    // Sets the saved time variable to the current time, and changes the beginning time
+    // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
-      clearInterval(countDown)
+    	savedTime = currentTime;
+    	beginningTime = false;
+      clearInterval(countDown);
     };
-/*
-    this.pause = function () {
-      savedTime = 0;
-      var state = document.getElementById("pause").getAttribute("value");
-      if (state == "in-progress") {
-        var savedTime = currentTime;
-        clearInterval(countDown)
-      } else {
-        currentTime = savedTime;
-        countDown
-      }
-    };
-*/
 
 
   }, 1000);
