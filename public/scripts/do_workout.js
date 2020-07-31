@@ -201,13 +201,6 @@ function displayExercise(num, name, reps, sets, points, id) {
 	exerciseSet.value = sets;
 	newSpan.appendChild(exerciseSet);
 
-	// Creating the more button
-	let moreBtn = document.createElement("button");
-	moreBtn.id = "more";
-	moreBtn.innerText = "More";
-	moreBtn.className = "more right-btn";
-	newSpan.appendChild(moreBtn);
-
 	// Creating the skip button
 	let skipBtn = document.createElement("button");
 	skipBtn.id = id;

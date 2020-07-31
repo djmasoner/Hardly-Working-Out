@@ -38,37 +38,21 @@
     </div>
 </header>
 
-
-  <div id="progress-display">
-    <svg id="timer-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <g id="timer-circle">
-        <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45" />
-        <path
-        id="time-remaining"
-        stroke-dasharray="283"
-        class="base-timer__path-remaining"
-        d="
-          M 50, 50
-          m -45, 0
-          a 45,45 0 1,0 90,0
-          a 45,45 0 1,0 -90,0
-        "
-      ></path>
-      </g>
-    </svg>
     <div id="time">
     </div>
-    <div id="points-display">
-    </div>
+<br>
+  <div id="points-display">
   </div>
-
-  <!--Should this be a form element?-->
+<br>
+  <div id="explain">
+    Click the number beside the exercise to mark it as complete and earn your points!
+  </div>
 
   <div id="workout-display">
     <!--Use JS to place exercises inside of divs with class="exercises" for styling in this div-->
   </div>
 
-    <div id="timer-controls">
+  <div id="timer-controls">
       <button id="start">Start/Resume Workout</button>
       <button id="pause">Pause Workout</button>
       <button id="end" data-toggle="modal" data-target="#finishWorkoutModal">End Workout</button>
