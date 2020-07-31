@@ -85,7 +85,7 @@ function setUpProgressBar(startTime, endTime, savedMid, update) {
   		current_prog_Time = current_prog_Time + skipEllapsed;
   	} else {
   		current_prog_Time = new Date().getTime()
-  		current_prog_Time = current_prog_Time + savedEllapsed + skipEllapsed;
+  		current_prog_Time = current_prog_Time + savedEllapsed;
   	};
     ellapsed = current_prog_Time - startTime
     if (ellapsed >= max) {
@@ -224,6 +224,12 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
   completeBtn.addEventListener('click', function() {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
 	  this.className = this.className + " done";
+	  if (beginningTime == true) {
+	  	skipEllapsed = skipEllapsed + (mins * 60000);
+	  } else {
+	  	savedEllapsed = savedEllapsed + (mins * 60000);
+	  };
+    currentTime = currentTime - (mins * 60);
 	  displayPoints();
 	};
   });
@@ -271,8 +277,12 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       let btnId = this.getAttribute('id');
       let compId = document.getElementById(btnId);
-      skipEllapsed = skipEllapsed + (mins * 60000);
-      currentTime = currentTime - (mins * 60);
+      if (beginningTime == true) {
+		  	skipEllapsed = skipEllapsed + (mins * 60000);
+		  } else {
+		  	savedEllapsed = savedEllapsed + (mins * 60000);
+		  };
+		  currentTime = currentTime - (mins * 60);
       compId.className = compId.className + " skipped";
 	};
   });
