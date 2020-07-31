@@ -253,6 +253,33 @@ app.get('/do_workout', function(req, res){
   });
 });
 
+app.post('/save_workout', function(req, res){
+  // Converts favorite true/false to 0/1 for DB
+  var isFavorite = false;
+  if (req.body.favorite == true) {
+    isFavorite = 1;
+  } else {
+    isFavorite = 0;
+  };
+
+  // Grabs current date
+  var todayDate = new Date();
+  todayDate.setDate(todayDate.getDate());
+  todayDate = todayDate.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO completed_workouts (`username`, `title`, `description`, `favorite`, `points`, `rating`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        res.send('Success');
+      };
+    }
+  );
+});
+
 app.get('/welcome', function(req, res){
   var path = 'welcome.html';
   res.sendFile(path, {root: './public'});
