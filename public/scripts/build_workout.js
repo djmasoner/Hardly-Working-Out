@@ -143,6 +143,7 @@ function buildWorkout(){
 
     req.send(JSON.stringify(exerciseArray));
 	
+	// Redirect to what will become the "do-workout" page
 	window.location.href = "/test_workout";
 
 };
