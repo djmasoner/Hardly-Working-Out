@@ -254,7 +254,6 @@ function endWorkout () {
   results.title = document.getElementById('workout_name').value;
   results.rating = document.getElementById('workout_rating').value;
   results.favorite = document.getElementById('workout_favorite').checked;
-  console.log(results);
 
   var localUrl = 'http://localhost:3000/save_workout';
   var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_workout';
@@ -271,7 +270,7 @@ function endWorkout () {
     }});
 
   req.send(JSON.stringify(results));
-
+alert("Congrats on your Workout!");
 window.location.href = "/welcome";
 
 }
