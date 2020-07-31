@@ -65,7 +65,75 @@ function getProfile(){
 	req.send(null);
 };
 
+function getCompletedWorkouts(){
+    var req = new XMLHttpRequest();
+    var localUrl = 'http://localhost:3000/view_completed_workouts';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/view_completed_workouts';
 
+    //req.open('GET', flipUrl, true);
+    req.open('GET', localUrl, true);
+    
+    req.withCredentials = false;
+	req.onload = function (e) {
+	  	if (req.readyState === 4) {
+	    	if (req.status === 200) {
+
+	    	// SQL Data returned from server
+            var data = JSON.parse(req.responseText);
+            var exerciseBody = document.getElementById("workoutsBody")
+
+        // This loop goes through each of the exercises and displays them
+		for (var i = 0; i < data.length; i++) {
+
+			// Creates the rows and cells
+		  	var row = document.createElement("tr");
+	    	var cell1 = document.createElement("td");
+	    	var cell2 = document.createElement("td");
+	    	var cell3 = document.createElement("td");
+	    	var cell4 = document.createElement("td");
+	    	var cell5 = document.createElement("td");
+	    	var cell6 = document.createElement("td");
+
+	    	// These are the variables created from the DB
+	    	var workoutTitle = document.createTextNode(data[i].title);
+	    	var workoutDate = document.createTextNode((data[i].date).substr(0,10));
+	    	var workoutRating = document.createTextNode(data[i].rating);
+	    	var workoutPoints = document.createTextNode(data[i].points);
+	    	var workoutDescription = document.createTextNode(data[i].description);
+	    	if (data[i].favorite == 1) {
+	    		var workoutFavorite = document.createTextNode("Yes");
+	    	} else {
+	    		var workoutFavorite = document.createTextNode("No");
+	    	};
+
+		    // Appending the variables to the cells
+		    cell1.appendChild(workoutTitle);
+		    cell2.appendChild(workoutDate);
+		    cell3.appendChild(workoutRating);
+		    cell4.appendChild(workoutPoints);
+		    cell5.appendChild(workoutDescription);
+		    cell6.appendChild(workoutFavorite);
+
+	    	row.appendChild(cell1);
+	    	row.appendChild(cell2);
+	    	row.appendChild(cell3);
+	    	row.appendChild(cell4);
+	    	row.appendChild(cell5);
+	    	row.appendChild(cell6);
+	    	
+		    // Appends row to the table
+		  	workoutsBody.appendChild(row);
+		}
+	    	} else {
+	      		console.error(req.statusText);
+	    	}
+	  	}
+	};
+	req.onerror = function (e) {
+	  console.error(req.statusText);
+	};
+	req.send(null);
+};
 
 // This function helps track your daily health data
 function dailyUpdate(){
@@ -420,3 +488,4 @@ function getDailyUpdate(){
 
 getProfile();
 getDailyUpdate();
+getCompletedWorkouts();

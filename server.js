@@ -143,6 +143,17 @@ app.get('/display_profile', function(req, res){
   };
 });
 
+// Display the completed workouts by the user
+app.get('/view_completed_workouts', function(req, res){
+  if (req.session.userData) {
+
+    // SQL query requires string to be in "double" quotes
+    pool.query('SELECT * FROM completed_workouts WHERE username = "'+req.session.userData+'"', function(err, rows, fields){
+      res.send(rows);
+    });
+  };
+});
+
 app.post('/daily_update', function(req, res){
 
   // Gets the date from the Post object and compares to the dates inside the database
