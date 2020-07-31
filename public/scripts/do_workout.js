@@ -10,8 +10,11 @@ var totalPoints = 0;
 // Used to determine if the time needed to start on the timer is the beginning time
 // Saved time and current time variables declared
 var beginningTime = true;
-var savedTime;
+var savedEllapsed;
+var skipEllapsed = 0;
+var ellapsed;
 var currentTime;
+var current_prog_Time;
 
 function calculatePoints(package) {
 	// Extra sets earn extra points
@@ -68,6 +71,44 @@ function doWorkout(){
 	req.send(null);
 };
 
+// https://stackoverflow.com/questions/58842508/how-to-fill-a-100-progress-bar-according-to-the-time-specified-by-the-user
+function setUpProgressBar(startTime, endTime, savedMid, update) {
+
+  var timer
+  var elem = document.querySelector('#progressBar')
+  var max = endTime - startTime
+  elem.max = max
+
+  var setValue = function() {
+  	if (beginningTime == true) {
+  		current_prog_Time = new Date().getTime()
+  		current_prog_Time = current_prog_Time + skipEllapsed;
+  	} else {
+  		current_prog_Time = new Date().getTime()
+  		current_prog_Time = current_prog_Time + savedEllapsed + skipEllapsed;
+  	};
+    ellapsed = current_prog_Time - startTime
+    if (ellapsed >= max) {
+      ellapsed = max
+      window.clearTimeout(timer)
+    }
+    elem.value = ellapsed
+    var prec = ellapsed/max * 100
+    elem.setAttribute("data-label", prec.toFixed(2) + '%')
+
+    document.getElementById("pause").addEventListener("click", this.pause);
+
+    this.pause = function () {
+    	savedEllapsed = ellapsed;
+      clearInterval(timer);
+    };
+  }
+
+  setValue()
+  timer = window.setInterval(setValue, update)
+  return
+}
+
 function startTimer(){
 	// Moving forward I'll need the aggregate time of a workout which will be set to start time
 	// I'll need to set the repeater off of start time.
@@ -76,10 +117,27 @@ function startTimer(){
 	// Get the start time and display element
 	if (beginningTime == true) {
 		currentTime = workoutTime * 60;
+		
+		// Set up variables for progress bar
+		var start_progress = new Date();
+		var end_progress = new Date();
+		end_progress.setMinutes(end_progress.getMinutes() + workoutTime);
+
+		// Initial call of progress bar
+		setUpProgressBar(start_progress.getTime(), end_progress.getTime(), 100)
+
 	} else {
-		currentTime = savedTime;
+		// Set up variables for progress bar
+		var start_progress = new Date();
+		var end_progress = new Date();
+		end_progress.setMinutes(end_progress.getMinutes() + workoutTime);
+
+		// Initial call of progress bar
+		setUpProgressBar(start_progress.getTime(), end_progress.getTime(), 100)
 	}
   var display = document.getElementById("time");
+
+
 
 	// Repeater function which calculates the remaining time
 	const countDown = window.setInterval(function() {
@@ -107,13 +165,12 @@ function startTimer(){
 			display.textContent = "Workout Complete!";
     }
 
-    document.getElementById("pause").addEventListener("click", this.pause)
+    document.getElementById("pause").addEventListener("click", this.pause);
     document.getElementById("end").addEventListener("click", this.stop);
 
     // Sets the saved time variable to the current time, and changes the beginning time
     // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
-    	savedTime = currentTime;
     	beginningTime = false;
       clearInterval(countDown);
     };
@@ -130,7 +187,8 @@ function unpackData(package) {
 		let exerciseReps = package[i].exercise.Reps;
 		let exerciseSets = package[i].sets;
 		let exercisePoints = package[i].exercise.Points;
-		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId);
+		let exerciseMins = package[i].exercise.Time * package[i].sets;
+		displayExercise(i, exerciseName, exerciseReps, exerciseSets, exercisePoints, exerciseId, exerciseMins);
 	};
 };
 
@@ -145,7 +203,7 @@ function timeData(package) {
   };
 };
 
-function displayExercise(num, name, reps, sets, points, id) {
+function displayExercise(num, name, reps, sets, points, id, mins) {
 
 
 	// Pass this the info from the DB, it'll create divs with the appropriate styling
@@ -220,6 +278,8 @@ function displayExercise(num, name, reps, sets, points, id) {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       let btnId = this.getAttribute('id');
       let compId = document.getElementById(btnId);
+      skipEllapsed = skipEllapsed + (mins * 60000);
+      currentTime = currentTime - (mins * 60);
       compId.className = compId.className + " skipped";
 	};
   });

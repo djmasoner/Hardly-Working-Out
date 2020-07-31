@@ -15,10 +15,11 @@
 }
 
 #time {
-    position: absolute;
+    /*position: absolute;*/
     width: 300px;
     height: 300px;
-    top: 0;
+    /*top: 0;*/
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,4 +110,21 @@
 
 .skipped {
     background-color: yellow;
+}
+
+progress {
+  text-align: center;
+  height: 1.5em;
+  width: 100%;
+  -webkit-appearance: none;
+  border: none;
+  position:relative;
+}
+progress:before {
+  content: attr(data-label);
+  font-size: 0.8em;
+  vertical-align: 0;
+  position:absolute;
+  left:0;
+  right:0;
 }
