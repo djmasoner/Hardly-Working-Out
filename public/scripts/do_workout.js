@@ -1,6 +1,6 @@
 // Submit button for building a workout
 document.getElementById("start").addEventListener("click", startTimer);
-document.getElementById("pause").addEventListener("click", startTimer);
+//document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("end").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
@@ -13,7 +13,7 @@ function calculatePoints(package) {
 		let exerciseSets = Number(package[i].sets);
 		let pointsValue = package[i].exercise.Points;
 		let exercisePoints = exerciseSets * pointsValue;
-	
+
 		totalPoints = totalPoints + exercisePoints;
 	};
 	displayPoints();
@@ -25,8 +25,8 @@ function displayPoints() {
 	// Calculate earned points
 	var completeExercises = document.getElementsByClassName('done');
 	for (i=0; i < completeExercises.length; i++) {
-		currentPoints = currentPoints + Number(completeExercises[i].value); 
-	}; 
+		currentPoints = currentPoints + Number(completeExercises[i].value);
+	};
 	document.getElementById("points-display").textContent = currentPoints + "/" + totalPoints + " points earned"
 };
 
@@ -88,7 +88,7 @@ function startTimer(){
 		}
 		// Sets the text content to the display element
     display.textContent = min + ":" + sec;
-    
+
 
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
@@ -99,8 +99,11 @@ function startTimer(){
 
     document.getElementById("pause").addEventListener("click", this.pause)
     document.getElementById("end").addEventListener("click", this.stop);
-    
 
+    this.pause = function () {
+      clearInterval(countDown)
+    };
+/*
     this.pause = function () {
       savedTime = 0;
       var state = document.getElementById("pause").getAttribute("value");
@@ -112,10 +115,8 @@ function startTimer(){
         countDown
       }
     };
+*/
 
-    this.stop = function () {
-      clearInterval(countDown)
-    };
 
   }, 1000);
 };
@@ -133,7 +134,7 @@ function unpackData(package) {
 };
 
 function timeData(package) {
-  // unpacks the data sets the total workout time. 
+  // unpacks the data sets the total workout time.
   for (i=0; i<Object.keys(package).length; i++) {
     let exerciseSets = Number(package[i].sets);
     let exerciseTime = package[i].exercise.Time;
@@ -234,6 +235,9 @@ function displayExercise(num, name, reps, sets, points, id) {
 };
 
 function endWorkout () {
+  // Link to the modal page
+  window.location.assign("http://localhost:3000/modal_button.html");
+
   var completeArray = [];
   var pointsEarned = 0;
   var completeButtons = document.getElementsByClassName('complete-btn');
