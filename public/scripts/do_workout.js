@@ -5,7 +5,14 @@ document.getElementById("submit_workout").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
 var workoutTime = 0;
+var exerciseTime = 0;
+var exerciseNum = 0;
+var exerciseMax = 0;
+var exerciseTimeLeft = 0;
+var exerciseArray = [];
 var totalPoints = 0;
+var clear_bool = false;
+var exerciseWindow;
 
 // Used to determine if the time needed to start on the timer is the beginning time
 // Saved time and current time variables declared
@@ -15,6 +22,14 @@ var skipEllapsed = 0;
 var ellapsed;
 var currentTime;
 var current_prog_Time;
+
+// Same as the above variables but for the exercise timer
+var beginningTimeExercise = true;
+var savedEllapsedExercise;
+var skipEllapsedExercise = 0;
+var ellapsedExercise;
+var currentTimeExercise;
+var current_prog_TimeExercise;
 
 function calculatePoints(package) {
 	// Extra sets earn extra points
@@ -114,6 +129,9 @@ function startTimer(){
 	// I'll need to set the repeater off of start time.
 	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
+	// Call the exercise timer
+	exerciseTimer();
+
 	// Get the start time and display element
 	if (beginningTime == true) {
 		currentTime = workoutTime * 60;
@@ -179,6 +197,66 @@ function startTimer(){
   }, 1000);
 };
 
+function exerciseTimer(){
+	console.log(exerciseNum);
+	// Get the start time and display element
+	if (beginningTimeExercise == true) {
+		currentTimeExercise = exerciseArray[exerciseNum] * 60;
+	}
+
+  	//var displayExercise = document.getElementById("exerciseTime");
+
+	// Repeater function which calculates the remaining time for an exercise
+	const countDownExercise = window.setInterval(function() {
+		
+		// First clear it, if skip or complete buttons have been pushed
+		if (clear_bool == true) {
+			clearInterval(countDownExercise);
+			clear_bool = false;
+		}
+		var oneSecond = 1;
+		var timeLeft = currentTimeExercise - oneSecond;
+
+		// To track how much time is left in an exercise, globally
+		exerciseTimeLeft = timeLeft;
+
+    var mil = timeLeft * 1000;
+    currentTimeExercise = currentTimeExercise - oneSecond;
+
+		//Calculate minutes and seconds
+		var min = Math.floor((mil % (1000 * 60 * 60)) / (1000 * 60));
+		var sec = Math.floor((mil % (1000 * 60)) / (1000));
+
+		// If sec is less than 10 we add a zero to the display otherwise we get 7:9, 7:8
+		if (sec < 10) {
+			sec = "0" + sec
+		}
+		// Sets the text content to the display element
+    //displayExercise.textContent = min + ":" + sec;
+
+
+		// If we're out of time the timer displays complete.
+		// not sure if this will actually stop, it's a new iteration that I haven't tested.
+		if (timeLeft <= 0) {
+			clearInterval(countDownExercise);
+			exerciseNum++;
+			exerciseTimer();
+    }
+
+    document.getElementById("pause").addEventListener("click", this.pause);
+    document.getElementById("end").addEventListener("click", this.stop);
+
+    // Sets the saved time variable to the current time, and changes the beginning time
+    // boolean to false so current time isn't reset when the user presses start
+    this.pause = function () {
+    	beginningTimeExercise = false;
+      clearInterval(countDownExercise);
+    };
+
+
+  }, 1000);
+};
+
 function unpackData(package) {
 	// unpacks the data and acts as a repeater function for displayExercise
 	for (i=0; i<Object.keys(package).length; i++) {
@@ -200,7 +278,11 @@ function timeData(package) {
     let totalTime = exerciseSets * exerciseTime;
 
     workoutTime = workoutTime + totalTime;
+    exerciseArray.push(totalTime);
+    exerciseMax++;
   };
+  console.log(exerciseArray);
+  console.log(exerciseMax);
 };
 
 function displayExercise(num, name, reps, sets, points, id, mins) {
@@ -229,7 +311,10 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	  } else {
 	  	savedEllapsed = savedEllapsed + (mins * 60000);
 	  };
-    currentTime = currentTime - (mins * 60);
+    currentTime = currentTime - exerciseTimeLeft;
+    exerciseNum++;
+    clear_bool = true;
+    exerciseTimer();
 	  displayPoints();
 	};
   });
@@ -282,7 +367,10 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 		  } else {
 		  	savedEllapsed = savedEllapsed + (mins * 60000);
 		  };
-		  currentTime = currentTime - (mins * 60);
+		  currentTime = currentTime - exerciseTimeLeft;
+		  clear_bool = true;
+		  exerciseNum++;
+    	  exerciseTimer();
       compId.className = compId.className + " skipped";
 	};
   });
