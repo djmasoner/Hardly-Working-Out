@@ -16,7 +16,8 @@ function getProfile(){
 	  	if (req.readyState === 4) {
 	    	if (req.status === 200) {
 	    	// SQL Data returned from server
-	    	var data = JSON.parse(req.responseText);
+			var data = JSON.parse(req.responseText);
+
 
 	    	// Clear the data currently there
 	    	document.getElementById('profileUsername').innerHTML = ""
@@ -80,7 +81,8 @@ function getCompletedWorkouts(){
 
 	    	// SQL Data returned from server
             var data = JSON.parse(req.responseText);
-            var exerciseBody = document.getElementById("workoutsBody")
+			var exerciseBody = document.getElementById("workoutsBody")
+			displayGoals(data);
 
         // This loop goes through each of the exercises and displays them
 		for (var i = 0; i < data.length; i++) {
@@ -485,6 +487,18 @@ function getDailyUpdate(){
 	};
 	req.send(null);
 };
+
+function displayGoals (data) {
+	var workoutsComplete = 0
+	var pointsTotal = 0
+
+	for (i=0; i<data.length; i++) {
+		workoutsComplete = i + 1 
+		pointsTotal = pointsTotal + data[i].points
+	}
+	console.log("Workouts complete = " + workoutsComplete)
+	console.log("Points earned = " + pointsTotal)
+}
 
 getProfile();
 getDailyUpdate();
