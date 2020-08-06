@@ -24,6 +24,8 @@
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-google-oauth2": "^0.2.0",
     "request": "^2.88.2"
   }
 }
