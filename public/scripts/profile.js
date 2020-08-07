@@ -20,7 +20,6 @@ function getProfile(){
 
 
 	    	// Clear the data currently there
-	    	document.getElementById('profileUsername').innerHTML = ""
 	    	document.getElementById('profileName').innerHTML = ""
 	    	document.getElementById('profileGender').innerHTML = ""
 	    	document.getElementById('profileAge').innerHTML = ""
@@ -29,7 +28,6 @@ function getProfile(){
 	    	document.getElementById('profileBmi').innerHTML = ""
 
 	    	// Get the elements again
-	    	var profileUsername = document.getElementById('profileUsername');
 	    	var profileName = document.getElementById('profileName');
 	    	var profileGender = document.getElementById('profileGender');
 	    	var profileAge = document.getElementById('profileAge');
@@ -38,7 +36,6 @@ function getProfile(){
 	    	var profileBmi = document.getElementById('profileBmi');
 
 	    	// Create text nodes from SQL data
-	    	var sqlUsername = document.createTextNode(data.Username);
 	    	var sqlName = document.createTextNode(data.Name);
 	    	var sqlGender = document.createTextNode(data.Gender);
 	    	var sqlAge = document.createTextNode(data.Age);
@@ -47,7 +44,6 @@ function getProfile(){
 	    	var sqlBmi = document.createTextNode(data.Bmi);
 
 	    	// Appending the variables to the cells
-	    	profileUsername.appendChild(sqlUsername);
 	    	profileName.appendChild(sqlName);
 	    	profileGender.appendChild(sqlGender);
 	    	profileAge.appendChild(sqlAge);

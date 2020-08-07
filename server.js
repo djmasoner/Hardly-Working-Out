@@ -5,6 +5,9 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var request = require('request');
 var mysql = require('mysql');
+var passport = require('passport');
+var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const {google} = require('googleapis');
 
 var formSubmits = []
 
@@ -20,6 +23,38 @@ var pool = mysql.createPool({
 // Oauth2 Client ID and Secret
 var clientID = '5c5585e7f4040ae68986'
 var clientSecret = '52d3f8b62aaa23c2d06448fff85c4461c620af67'
+
+passport.use(new GoogleStrategy({
+    clientID:     '374190043347-pbn6hpfs7norvdg7p78oilsdghsvacfa.apps.googleusercontent.com',
+    clientSecret: 'CkQIBtJTqUR-LyCR8jgRIMR0',
+    callbackURL: 'http://localhost:3000/auth/google/callback',
+    passReqToCallback   : true
+  },
+  function(request, accessToken, refreshToken, profile, done) {
+    var email_array = (profile.email).split('@');
+
+    request.session.userData = email_array[0];
+    request.session.token = accessToken;
+
+    pool.query('SELECT Username FROM user', function(err, rows, fields){
+      var usernameValid = false;
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].Username == request.session.userData) {
+          usernameValid = true;
+        };
+      };
+      if (usernameValid == true) {
+        return done(null, {profile: profile.email, token: accessToken, userExist: true});
+      } else {
+        return done(null, {profile: profile.email, token: accessToken, userExist: false});
+      };
+    });
+  }
+));
+app.use(passport.initialize());
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
 
 app.use(express.static(__dirname + '/public'));
 
@@ -40,45 +75,14 @@ app.use (session({
   //won't use secure since we aren't using HTTPS
 }))
 
-// The login redirect route
-app.get('/oauth/redirect', function(req, res){
-  // Token is received from github and included into a url with the client ID and client secret
-  var requestToken = req.query.code;
-  //res.setHeader('Content-Type', 'application/json');
-  var tokenUrl = 'https://github.com/login/oauth/access_token?client_id='+clientID+'&client_secret='+clientSecret+'&code='+requestToken
-  // Request made to github and the response token is used in the redirection response
-  request({
-      uri: tokenUrl, 
-      headers: {'Accept':'application/json'}
-    }, function(error,response,body){
-    
-      // Access token is the OAuth access token for Github
-      var accessToken = (JSON.parse(body)).access_token;
-      var githubApiUrl = 'https://api.github.com/user'
-    // Request made to the Github API with the OAuth token passed; username is requested
-    request({
-      uri: githubApiUrl,
-      // User agent header tells Github which app is requesting, auth token is the OAuth token 
-      headers: {'User-Agent':'ryancraigdavis', 'Authorization': 'token ' + accessToken}
-    }, function(error,response,body){
-      var githubData = JSON.parse(body);
-      req.session.userData = githubData.login;
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-      pool.query('SELECT Username FROM user', function(err, rows, fields){
-        var usernameValid = false;
-        for (var i = 0; i < rows.length; i++) {
-          if (rows[i].Username == req.session.userData) {
-            usernameValid = true;
-          };
-        };
-        if (usernameValid == true) {
-          res.redirect('/welcome');
-        } else {
-          res.redirect('/create');
-        };
-      });
-    });
-  });
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function(req, res) {
+  if (req.user.userExist == false) {
+    res.redirect('/create');
+  } else {
+    res.redirect('/welcome');
+  }; 
 });
 
 app.get('/logout', function(req, res){
@@ -291,6 +295,37 @@ app.post('/save_workout', function(req, res){
   );
 });
 
+app.post('/save_competitor', function(req, res){
+
+  // Saves current competitor to the session
+  req.session.newCompetitor = req.body.competitor;
+  res.send('Success');
+});
+
+app.post('/send_challenge', function(req, res){
+  var exercise_JSON = JSON.stringify(req.body);
+
+  startDay = new Date();
+  endDay = new Date();
+
+  startDay.setDate(startDay.getDate());
+  startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  endDay.setDate(endDay.getDate()+7);
+  endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
+    [req.session.userData, req.session.newCompetitor, startDay, endDay, exercise_JSON], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        res.send('Success');
+      };
+    }
+  );
+});
+
 app.get('/welcome', function(req, res){
   var path = 'welcome.html';
   res.sendFile(path, {root: './public'});
@@ -313,6 +348,11 @@ app.get('/login', function(req, res){
 
 app.get('/build_workouts', function(req, res){
   var path = 'build_workouts.html';
+  res.sendFile(path, {root: './public'})
+})
+
+app.get('/build_challenge', function(req, res){
+  var path = 'build_challenge.html';
   res.sendFile(path, {root: './public'})
 })
 
