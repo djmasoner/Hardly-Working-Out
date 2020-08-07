@@ -78,7 +78,30 @@ function startChallenge(competitor, user){
 	event.preventDefault();
 	// This will be the redirect to the challenge game
 	alert(user+' is challenging '+competitor);
-	return false;
+
+	// Sends the challenger to the server
+	var challengeObject = new Object();
+    challengeObject = {
+        "competitor": competitor
+    };
+
+    var req = new XMLHttpRequest();
+	var localUrl = 'http://localhost:3000/save_competitor';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_competitor';
+
+    //req.open('POST', flipUrl, true);
+    req.open('POST', localUrl, true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load',function(){
+      if(req.status >= 200 && req.status < 400){
+        window.location.href = "/build_challenge";
+      } else {
+        console.log("Error in network request: " + req.statusText);
+      }});
+
+    req.send(JSON.stringify(challengeObject));
+
+    
 };
 
 viewCompetitors();

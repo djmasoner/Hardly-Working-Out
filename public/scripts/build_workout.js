@@ -126,7 +126,7 @@ function buildWorkout(){
 		alert("You didn't select any exercises!");
 		return;
 	};
-	console.log(exerciseArray);
+
     var localUrl = 'http://localhost:3000/begin_workout';
     var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/begin_workout';
     var req = new XMLHttpRequest();

@@ -7,6 +7,7 @@ var request = require('request');
 var mysql = require('mysql');
 var passport = require('passport');
 var GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const {google} = require('googleapis');
 
 var formSubmits = []
 
@@ -30,8 +31,9 @@ passport.use(new GoogleStrategy({
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
+    var email_array = (profile.email).split('@');
 
-    request.session.userData = profile.id;
+    request.session.userData = email_array[0];
     request.session.token = accessToken;
 
     pool.query('SELECT Username FROM user', function(err, rows, fields){
@@ -42,9 +44,9 @@ passport.use(new GoogleStrategy({
         };
       };
       if (usernameValid == true) {
-        return done(null, {profile: profile.id, token: accessToken, userExist: true});
+        return done(null, {profile: profile.email, token: accessToken, userExist: true});
       } else {
-        return done(null, {profile: profile.id, token: accessToken, userExist: false});
+        return done(null, {profile: profile.email, token: accessToken, userExist: false});
       };
     });
   }
@@ -73,7 +75,7 @@ app.use (session({
   //won't use secure since we aren't using HTTPS
 }))
 
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'https://www.googleapis.com/auth/calendar'] }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), function(req, res) {
   if (req.user.userExist == false) {
@@ -293,6 +295,37 @@ app.post('/save_workout', function(req, res){
   );
 });
 
+app.post('/save_competitor', function(req, res){
+
+  // Saves current competitor to the session
+  req.session.newCompetitor = req.body.competitor;
+  res.send('Success');
+});
+
+app.post('/send_challenge', function(req, res){
+  var exercise_JSON = JSON.stringify(req.body);
+
+  startDay = new Date();
+  endDay = new Date();
+
+  startDay.setDate(startDay.getDate());
+  startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  endDay.setDate(endDay.getDate()+7);
+  endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
+    [req.session.userData, req.session.newCompetitor, startDay, endDay, exercise_JSON], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        res.send('Success');
+      };
+    }
+  );
+});
+
 app.get('/welcome', function(req, res){
   var path = 'welcome.html';
   res.sendFile(path, {root: './public'});
@@ -315,6 +348,11 @@ app.get('/login', function(req, res){
 
 app.get('/build_workouts', function(req, res){
   var path = 'build_workouts.html';
+  res.sendFile(path, {root: './public'})
+})
+
+app.get('/build_challenge', function(req, res){
+  var path = 'build_challenge.html';
   res.sendFile(path, {root: './public'})
 })
 
