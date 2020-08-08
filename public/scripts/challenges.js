@@ -2,11 +2,8 @@
 // Code to display all of the users to compete with
 function viewCompetitors(){
     var req = new XMLHttpRequest();
-    var localUrl = 'http://localhost:3000/view_competitors';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/view_competitors';
 
-    //req.open('GET', flipUrl, true);
-    req.open('GET', localUrl, true);
+    req.open('GET', serverUrl+'/view_competitors', true);
     
     req.withCredentials = false;
 	req.onload = function (e) {
@@ -76,11 +73,8 @@ function viewCompetitors(){
 
 function viewActiveChallenges(){
     var req = new XMLHttpRequest();
-    var localUrl = 'http://localhost:3000/view_active_challenges';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/view_active_challenges';
 
-    //req.open('GET', flipUrl, true);
-    req.open('GET', localUrl, true);
+    req.open('GET', serverUrl+'/view_active_challenges', true);
     
     req.withCredentials = false;
 	req.onload = function (e) {
@@ -149,11 +143,8 @@ function startChallenge(competitor, user){
     };
 
     var req = new XMLHttpRequest();
-	var localUrl = 'http://localhost:3000/save_competitor';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_competitor';
 
-    //req.open('POST', flipUrl, true);
-    req.open('POST', localUrl, true);
+    req.open('POST', serverUrl+'/save_competitor', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
@@ -173,11 +164,9 @@ function startWorkout(id){
     var startObject = new Object();
     startObject.id = id;
 
-    var localUrl = 'http://localhost:3000/begin_challenge';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/begin_challenge';
     var req = new XMLHttpRequest();
-    //req.open('POST', flipUrl, true);
-    req.open('POST', localUrl, true);
+
+    req.open('POST', serverUrl+'/begin_challenge', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){

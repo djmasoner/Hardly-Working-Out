@@ -21,11 +21,9 @@ function acceptChallenge(value, id){
     updateObject.id = id;
     updateObject.accept = value;
 
-    var localUrl = 'http://localhost:3000/update_challenge';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/update_challenge';
     var req = new XMLHttpRequest();
-    //req.open('POST', flipUrl, true);
-    req.open('POST', localUrl, true);
+
+    req.open('POST', serverUrl+'/update_challenge', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
@@ -49,11 +47,9 @@ function dismissChallenge(value, id){
     updateObject.id = id;
     updateObject.accept = value;
 
-    var localUrl = 'http://localhost:3000/update_challenge';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/update_challenge';
     var req = new XMLHttpRequest();
-    //req.open('POST', flipUrl, true);
-    req.open('POST', localUrl, true);
+
+    req.open('POST', serverUrl+'/update_challenge', true);
     req.setRequestHeader('Content-Type', 'application/json');
     req.addEventListener('load',function(){
       if(req.status >= 200 && req.status < 400){
@@ -72,11 +68,8 @@ function dismissChallenge(value, id){
 
 function getActiveChallenges(){
     var req = new XMLHttpRequest();
-    var localUrl = 'http://localhost:3000/get_active_challenges';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/get_active_challenges';
 
-    //req.open('GET', flipUrl, true);
-    req.open('GET', localUrl, true);
+    req.open('GET', serverUrl+'/get_active_challenges', true);
     
     req.withCredentials = false;
 	req.onload = function (e) {
