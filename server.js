@@ -224,6 +224,18 @@ app.get('/view_competitors', function(req, res){
   });
 });
 
+app.get('/view_active_challenges', function(req, res){
+  pool.query('SELECT * FROM challenges WHERE competitor = "'+req.session.userData+'"', function(err, rows, fields){
+    var activeChallengesArray = [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1) {
+        activeChallengesArray.push(rows[i]);
+      };
+    };
+    res.send(activeChallengesArray);
+  });
+});
+
 app.get('/', function(req, res){
   // If the user is logged in, redirect to welcome page
   if (req.session.userData) {
@@ -247,6 +259,35 @@ app.get('/profile', function(req, res){
 app.post('/begin_workout', function(req, res){
     req.session.newWorkout = req.body;
     res.send('success');
+});
+
+app.post('/update_challenge', function(req, res){
+  pool.query("UPDATE challenges SET accept=? WHERE challenge_id=? ",
+    [req.body.accept, req.body.id], function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        res.send('Success');
+      };
+  });
+});
+
+app.get('/get_active_challenges', function(req, res){
+  activeArray = [];
+
+  // Grabs current date
+  var todayDate = new Date();
+  todayDate.setDate(todayDate.getDate());
+
+  pool.query('SELECT * FROM challenges', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 0 && rows[i].competitor == req.session.userData && rows[i].end_date >= todayDate) {
+        activeArray.push(rows[i]);
+      };
+    };
+    res.send(activeArray);
+  });
 });
 
 app.get('/do_workout', function(req, res){
