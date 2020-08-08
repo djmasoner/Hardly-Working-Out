@@ -224,6 +224,18 @@ app.get('/view_competitors', function(req, res){
   });
 });
 
+app.get('/view_active_challenges', function(req, res){
+  pool.query('SELECT * FROM challenges WHERE competitor = "'+req.session.userData+'"', function(err, rows, fields){
+    var activeChallengesArray = [];
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1) {
+        activeChallengesArray.push(rows[i]);
+      };
+    };
+    res.send(activeChallengesArray);
+  });
+});
+
 app.get('/', function(req, res){
   // If the user is logged in, redirect to welcome page
   if (req.session.userData) {
