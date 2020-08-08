@@ -1,9 +1,8 @@
-// Submit button for building a workout
+// Buttons to attach listeners to the start and end workout buttons
 document.getElementById("start").addEventListener("click", startTimer);
-//document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("submit_workout").addEventListener("click", endWorkout);
 
-// We'll eventually set this to use the total time of a workout.
+// Global variables used to track a users progression through a workout
 var workoutTime = 0;
 var exerciseTime = 0;
 var exerciseNum = 0;
@@ -70,7 +69,6 @@ function doWorkout(){
 
 	    	// SQL Data returned from server
 			var data = JSON.parse(req.responseText);
-			// console.log(data) -- if we want to see our data returned from the server.
 			unpackData(data);
 			timeData(data);
 			calculatePoints(data);
@@ -125,9 +123,6 @@ function setUpProgressBar(startTime, endTime, savedMid, update) {
 }
 
 function startTimer(){
-	// Moving forward I'll need the aggregate time of a workout which will be set to start time
-	// I'll need to set the repeater off of start time.
-	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Call the exercise timer
 	exerciseTimer();
@@ -155,8 +150,6 @@ function startTimer(){
 	}
   var display = document.getElementById("time");
 
-
-
 	// Repeater function which calculates the remaining time
 	const countDown = window.setInterval(function() {
 		var oneSecond = 1;
@@ -175,7 +168,6 @@ function startTimer(){
 		// Sets the text content to the display element
     display.textContent = min + ":" + sec;
 
-
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (timeLeft <= 0) {
@@ -186,7 +178,6 @@ function startTimer(){
     document.getElementById("pause").addEventListener("click", this.pause);
     document.getElementById("end").addEventListener("click", this.stop);
 
-    // Sets the saved time variable to the current time, and changes the beginning time
     // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
     	beginningTime = false;
@@ -203,8 +194,6 @@ function exerciseTimer(){
 	if (beginningTimeExercise == true) {
 		currentTimeExercise = exerciseArray[exerciseNum] * 60;
 	}
-
-  	//var displayExercise = document.getElementById("exerciseTime");
 
 	// Repeater function which calculates the remaining time for an exercise
 	const countDownExercise = window.setInterval(function() {
@@ -231,12 +220,8 @@ function exerciseTimer(){
 		if (sec < 10) {
 			sec = "0" + sec
 		}
-		// Sets the text content to the display element
-    //displayExercise.textContent = min + ":" + sec;
-
 
 		// If we're out of time the timer displays complete.
-		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (timeLeft <= 0) {
 			clearInterval(countDownExercise);
 			exerciseNum++;
@@ -246,7 +231,6 @@ function exerciseTimer(){
     document.getElementById("pause").addEventListener("click", this.pause);
     document.getElementById("end").addEventListener("click", this.stop);
 
-    // Sets the saved time variable to the current time, and changes the beginning time
     // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
     	beginningTimeExercise = false;
@@ -281,8 +265,6 @@ function timeData(package) {
     exerciseArray.push(totalTime);
     exerciseMax++;
   };
-  console.log(exerciseArray);
-  console.log(exerciseMax);
 };
 
 function displayExercise(num, name, reps, sets, points, id, mins) {
@@ -356,7 +338,6 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	skipBtn.innerText = "Skip";
     skipBtn.className = "skip right-btn";
 
-  // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   skipBtn.addEventListener('click', function() {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
@@ -424,7 +405,6 @@ function endWorkout () {
   req.send(JSON.stringify(results));
 alert("Congrats on your Workout!");
 window.location.href = "/welcome";
-
-}
+};
 
 doWorkout();
