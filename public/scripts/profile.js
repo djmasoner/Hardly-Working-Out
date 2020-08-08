@@ -16,7 +16,9 @@ function getProfile(){
 	  	if (req.readyState === 4) {
 	    	if (req.status === 200) {
 	    	// SQL Data returned from server
-	    	var data = JSON.parse(req.responseText);
+			var data = JSON.parse(req.responseText);
+			displayGoals(data);
+
 
 	    	// Clear the data currently there
 	    	document.getElementById('profileName').innerHTML = ""
@@ -76,7 +78,8 @@ function getCompletedWorkouts(){
 
 	    	// SQL Data returned from server
             var data = JSON.parse(req.responseText);
-            var exerciseBody = document.getElementById("workoutsBody")
+			var exerciseBody = document.getElementById("workoutsBody")
+			calculateGoals(data);
 
         // This loop goes through each of the exercises and displays them
 		for (var i = 0; i < data.length; i++) {
@@ -480,6 +483,40 @@ function getDailyUpdate(){
 	  console.error(req.statusText);
 	};
 	req.send(null);
+};
+
+function calculateGoals (data) {
+	var workoutsComplete = 0
+	var pointsTotal = 0
+
+
+	for (i=0; i<data.length; i++) {
+		workoutsComplete = i + 1 
+		pointsTotal = pointsTotal + data[i].points
+	}
+	console.log("Workouts complete = " + workoutsComplete);
+	console.log("Points earned = " + pointsTotal);
+
+};
+
+function displayGoals (data) { 
+	let pointDisplay = document.getElementById("points-progress");
+	let setterDisplay = document.getElementById("workout-progress");
+
+	let pointGoal = data["Points Goal"];
+
+	if (pointGoal == null) {
+		pointGoal = 0;
+	};
+
+	let workoutGoal = data["Workout Goal"];
+
+	if (workoutGoal == null) {
+		workoutGoal = 0;
+	};
+	
+	pointDisplay.innerText = "You've earned out of " + pointGoal + " points!"
+	setterDisplay.innerText = "You've earned out of " + pointGoal + " points!"
 };
 
 getProfile();

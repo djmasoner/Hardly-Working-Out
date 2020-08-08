@@ -1,10 +1,11 @@
-// Buttons to attach listeners to the start and end workout buttons
+// Submit button for building a workout
 document.getElementById("start").addEventListener("click", startTimer);
+//document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("submit_workout").addEventListener("click", endWorkout);
 
-// Global variables used to track a users progression through a workout
+// We'll eventually set this to use the total time of a workout.
 var workoutTime = 0;
-var exerciseTime = 0;
+var exerciseTimeSet = 0;
 var exerciseNum = 0;
 var exerciseMax = 0;
 var exerciseTimeLeft = 0;
@@ -56,8 +57,8 @@ function displayPoints() {
 
 function doWorkout(){
     var req = new XMLHttpRequest();
-    var localUrl = 'http://localhost:3000/do_workout';
-    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/do_workout';
+    var localUrl = 'http://localhost:3000/do_challenge_workout';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/do_challenge_workout';
 
     //req.open('GET', flipUrl, true);
     req.open('GET', localUrl, true);
@@ -69,6 +70,7 @@ function doWorkout(){
 
 	    	// SQL Data returned from server
 			var data = JSON.parse(req.responseText);
+			// console.log(data) -- if we want to see our data returned from the server.
 			unpackData(data);
 			timeData(data);
 			calculatePoints(data);
@@ -123,6 +125,9 @@ function setUpProgressBar(startTime, endTime, savedMid, update) {
 }
 
 function startTimer(){
+	// Moving forward I'll need the aggregate time of a workout which will be set to start time
+	// I'll need to set the repeater off of start time.
+	// Also seems to be attached to sessions? It certainly persists. Is this bad?
 
 	// Call the exercise timer
 	exerciseTimer();
@@ -150,6 +155,8 @@ function startTimer(){
 	}
   var display = document.getElementById("time");
 
+
+
 	// Repeater function which calculates the remaining time
 	const countDown = window.setInterval(function() {
 		var oneSecond = 1;
@@ -168,6 +175,7 @@ function startTimer(){
 		// Sets the text content to the display element
     display.textContent = min + ":" + sec;
 
+
 		// If we're out of time the timer displays complete.
 		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (timeLeft <= 0) {
@@ -178,6 +186,7 @@ function startTimer(){
     document.getElementById("pause").addEventListener("click", this.pause);
     document.getElementById("end").addEventListener("click", this.stop);
 
+    // Sets the saved time variable to the current time, and changes the beginning time
     // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
     	beginningTime = false;
@@ -189,11 +198,13 @@ function startTimer(){
 };
 
 function exerciseTimer(){
-	console.log(exerciseNum);
 	// Get the start time and display element
 	if (beginningTimeExercise == true) {
 		currentTimeExercise = exerciseArray[exerciseNum] * 60;
+		exerciseTimeSet = exerciseArray[exerciseNum] * 60;
 	}
+
+  	//var displayExercise = document.getElementById("exerciseTime");
 
 	// Repeater function which calculates the remaining time for an exercise
 	const countDownExercise = window.setInterval(function() {
@@ -220,8 +231,12 @@ function exerciseTimer(){
 		if (sec < 10) {
 			sec = "0" + sec
 		}
+		// Sets the text content to the display element
+    //displayExercise.textContent = min + ":" + sec;
+
 
 		// If we're out of time the timer displays complete.
+		// not sure if this will actually stop, it's a new iteration that I haven't tested.
 		if (timeLeft <= 0) {
 			clearInterval(countDownExercise);
 			exerciseNum++;
@@ -231,6 +246,7 @@ function exerciseTimer(){
     document.getElementById("pause").addEventListener("click", this.pause);
     document.getElementById("end").addEventListener("click", this.stop);
 
+    // Sets the saved time variable to the current time, and changes the beginning time
     // boolean to false so current time isn't reset when the user presses start
     this.pause = function () {
     	beginningTimeExercise = false;
@@ -281,6 +297,8 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	completeBtn.className = "complete-btn";
   completeBtn.textContent = num + 1;
   completeBtn.id = id;
+
+  // Differing from regular workouts - a time multiplier is added in name
   completeBtn.value = points * sets;
 
   // Adds an event listener to the complete buttons to add their value to the array
@@ -294,6 +312,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	  	savedEllapsed = savedEllapsed + (mins * 60000);
 	  };
     currentTime = currentTime - exerciseTimeLeft;
+  	this.name = (1 + (exerciseTimeLeft/exerciseTimeSet)).toString();
     exerciseNum++;
     clear_bool = true;
     exerciseTimer();
@@ -333,28 +352,14 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	newSpan.appendChild(exerciseSet);
 
 	// Creating the skip button
-	let skipBtn = creatSkipButton(id);
-	newSpan.appendChild(skipBtn);
+	let skipBtn = document.createElement("button");
+	skipBtn.id = id;
+	skipBtn.innerText = "Skip";
+    skipBtn.className = "skip right-btn";
 
-	let divTwo = document.createElement("div");
-	divTwo.className = "exercises";
-
-
-	// insert information here at a later time... not feeling it rn.
-	divTwo.appendChild(divOne);
-	divTwo.appendChild(newSpan);
-	display.appendChild(divTwo);
-};
-
-function creatSkipButton (id) {
-  //Create the HTML button and set it's attributes
-	skipButton = document.createElement("button");
-	skipButton.id = id;
-	skipButton.innerText = "Skip";
-  skipButton.className = "skip right-btn";
-
-  //Create the event listener which makes sure the workout can't be both skipped or completed again.
-  skipButton.addEventListener('click', function() {
+  // Adds an event listener to the complete buttons to add their value to the array
+  // and add a class of done to the button.
+  skipBtn.addEventListener('click', function() {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       let btnId = this.getAttribute('id');
       let compId = document.getElementById(btnId);
@@ -368,9 +373,18 @@ function creatSkipButton (id) {
 		  exerciseNum++;
     	  exerciseTimer();
       compId.className = compId.className + " skipped";
-	  };
+	};
   });
-  return skipButton
+	newSpan.appendChild(skipBtn);
+
+	let divTwo = document.createElement("div");
+	divTwo.className = "exercises";
+
+
+	// insert information here at a later time... not feeling it rn.
+	divTwo.appendChild(divOne);
+	divTwo.appendChild(newSpan);
+	display.appendChild(divTwo);
 };
 
 function endWorkout () {
@@ -379,38 +393,44 @@ function endWorkout () {
 
   var completeArray = [];
   var pointsEarned = 0;
+  var challengePointsEarned = 0;
   var completeButtons = document.getElementsByClassName('complete-btn');
   for (i=0; i < completeButtons.length; i++) {
 	  if (completeButtons[i].classList.contains("done")) {
 		completeArray.push(completeButtons[i].id);
 		pointsEarned = pointsEarned + Number(completeButtons[i].value);
+		challengePointsEarned = challengePointsEarned + (Number(completeButtons[i].value)*Number(completeButtons[i].name));
 	  };
   } ;
   var results = Object();
   results.completedExercises = completeArray;
   results.points = pointsEarned;
+  results.challengePoints = challengePointsEarned;
   results.description = document.getElementById('workout_description').value;
   results.title = document.getElementById('workout_name').value;
   results.rating = document.getElementById('workout_rating').value;
   results.favorite = document.getElementById('workout_favorite').checked;
 
-  var localUrl = 'http://localhost:3000/save_workout';
-  var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_workout';
-  var req = new XMLHttpRequest();
-  
-  //req.open('POST', flipUrl, true);
-  req.open('POST', localUrl, true);
-  req.setRequestHeader('Content-Type', 'application/json');
-  req.addEventListener('load',function(){
-    if(req.status >= 200 && req.status < 400){
-  		console.log(req.responseText);
-    } else {
-      console.log("Error in network request: " + req.statusText);
-    }});
+  console.log(results);
 
-  req.send(JSON.stringify(results));
-alert("Congrats on your Workout!");
-window.location.href = "/welcome";
-};
+//   var localUrl = 'http://localhost:3000/save_workout';
+//   var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_workout';
+//   var req = new XMLHttpRequest();
+  
+//   //req.open('POST', flipUrl, true);
+//   req.open('POST', localUrl, true);
+//   req.setRequestHeader('Content-Type', 'application/json');
+//   req.addEventListener('load',function(){
+//     if(req.status >= 200 && req.status < 400){
+//   		console.log(req.responseText);
+//     } else {
+//       console.log("Error in network request: " + req.statusText);
+//     }});
+
+//   req.send(JSON.stringify(results));
+// alert("Congrats on your Challenge!");
+// window.location.href = "/welcome";
+
+}
 
 doWorkout();
