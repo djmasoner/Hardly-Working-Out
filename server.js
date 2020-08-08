@@ -309,6 +309,29 @@ app.get('/do_workout', function(req, res){
   });
 });
 
+app.get('/do_challenge_workout', function(req, res){
+  pool.query('SELECT exercise_array FROM challenges WHERE challenge_id = "'+req.session.doChallengeId+'"', function(err, rows, fields){
+    var exercisesArray = JSON.parse(rows[0].exercise_array);
+    returnArray = [];
+    pool.query('SELECT * FROM Exercises', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      for (var j = 0; j < exercisesArray.length; j++) {
+        if (rows[i].ID == exercisesArray[j].id) {
+          var exerciseReturnObject = new Object();
+          exerciseReturnObject = {
+            "exercise": rows[i],
+            "sets": exercisesArray[j].sets
+          };
+          returnArray.push(exerciseReturnObject);
+        };
+      };
+    };
+    res.send(returnArray);
+  });
+
+  });
+});
+
 app.post('/save_workout', function(req, res){
   // Converts favorite true/false to 0/1 for DB
   var isFavorite = false;
@@ -340,6 +363,13 @@ app.post('/save_competitor', function(req, res){
 
   // Saves current competitor to the session
   req.session.newCompetitor = req.body.competitor;
+  res.send('Success');
+});
+
+app.post('/begin_challenge', function(req, res){
+
+  // Saves the challenges ID to the session
+  req.session.doChallengeId = req.body.id;
   res.send('Success');
 });
 
@@ -404,6 +434,11 @@ app.get('/workouts_completed', function(req, res){
 
 app.get('/test_workout', function(req, res){
   var path = 'test_workout.html';
+  res.sendFile(path, {root: './public'})
+})
+
+app.get('/do_challenge', function(req, res){
+  var path = 'do_challenge.html';
   res.sendFile(path, {root: './public'})
 })
 

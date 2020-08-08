@@ -167,10 +167,31 @@ function startChallenge(competitor, user){
 };
 
 function startWorkout(id){
-	event.preventDefault();
-	// This will be the redirect to the challenge game
-	alert(id);
-    
+    event.preventDefault();
+
+    // Posts the id to the server to save in a session
+    var startObject = new Object();
+    startObject.id = id;
+
+    var localUrl = 'http://localhost:3000/begin_challenge';
+    var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/begin_challenge';
+    var req = new XMLHttpRequest();
+    //req.open('POST', flipUrl, true);
+    req.open('POST', localUrl, true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load',function(){
+      if(req.status >= 200 && req.status < 400){
+    	
+
+      } else {
+        console.log("Error in network request: " + req.statusText);
+      }});
+
+    req.send(JSON.stringify(startObject));
+	
+	// Redirect to the do challenge page
+	window.location.href = "/do_challenge";
+
 };
 
 viewCompetitors();
