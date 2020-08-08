@@ -333,13 +333,28 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	newSpan.appendChild(exerciseSet);
 
 	// Creating the skip button
-	let skipBtn = document.createElement("button");
-	skipBtn.id = id;
-	skipBtn.innerText = "Skip";
-    skipBtn.className = "skip right-btn";
+	let skipBtn = creatSkipButton(id);
+	newSpan.appendChild(skipBtn);
 
-  // and add a class of done to the button.
-  skipBtn.addEventListener('click', function() {
+	let divTwo = document.createElement("div");
+	divTwo.className = "exercises";
+
+
+	// insert information here at a later time... not feeling it rn.
+	divTwo.appendChild(divOne);
+	divTwo.appendChild(newSpan);
+	display.appendChild(divTwo);
+};
+
+function creatSkipButton (id) {
+  //Create the HTML button and set it's attributes
+	skipButton = document.createElement("button");
+	skipButton.id = id;
+	skipButton.innerText = "Skip";
+  skipButton.className = "skip right-btn";
+
+  //Create the event listener which makes sure the workout can't be both skipped or completed again.
+  skipButton.addEventListener('click', function() {
     if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
       let btnId = this.getAttribute('id');
       let compId = document.getElementById(btnId);
@@ -353,18 +368,9 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 		  exerciseNum++;
     	  exerciseTimer();
       compId.className = compId.className + " skipped";
-	};
+	  };
   });
-	newSpan.appendChild(skipBtn);
-
-	let divTwo = document.createElement("div");
-	divTwo.className = "exercises";
-
-
-	// insert information here at a later time... not feeling it rn.
-	divTwo.appendChild(divOne);
-	divTwo.appendChild(newSpan);
-	display.appendChild(divTwo);
+  return skipButton
 };
 
 function endWorkout () {
