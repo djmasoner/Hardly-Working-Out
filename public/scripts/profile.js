@@ -1,5 +1,10 @@
 // Submit button for daily update of BMI data
 document.getElementById("updateBmi").addEventListener("click", dailyUpdate);
+document.getElementById("setPointGoal").addEventListener("click", setPointGoal);
+document.getElementById("setWorkoutGoal").addEventListener("click", setWorkoutGoal);
+
+workoutGoal = null;
+pointGoal = null;
 
 function getProfile(){
 
@@ -13,7 +18,7 @@ function getProfile(){
 	    	if (req.status === 200) {
 	    	// SQL Data returned from server
 			var data = JSON.parse(req.responseText);
-			displayGoals(data);
+			getGoals(data);
 
 
 	    	// Clear the data currently there
@@ -469,6 +474,12 @@ function getDailyUpdate(){
 	req.send(null);
 };
 
+function getGoals (data) {
+	pointGoal = data.pointsGoal;
+	workoutGoal = data.workoutGoal;
+	console.log(pointGoal, workoutGoal)
+}
+
 function calculateGoals (data) {
 	var workoutsComplete = 0
 	var pointsTotal = 0
@@ -478,30 +489,58 @@ function calculateGoals (data) {
 		workoutsComplete = i + 1 
 		pointsTotal = pointsTotal + data[i].points
 	}
-	console.log("Workouts complete = " + workoutsComplete);
-	console.log("Points earned = " + pointsTotal);
 
+	displayPointGoals(pointsTotal, pointGoal);
+	displayWorkoutGoals(workoutsComplete, workoutGoal);
 };
 
-function displayGoals (data) { 
-	let pointDisplay = document.getElementById("points-progress");
-	let setterDisplay = document.getElementById("workout-progress");
+function displayPointGoals (points, pointGoal) { 
+// seems sporadic with when it works and doesn't it's buggy
+	let pointDisplay = document.getElementById("point-progress");
 
-	let pointGoal = data["Points Goal"];
-
+	if (points == null) {
+		points = 0;
+	}
 	if (pointGoal == null) {
-		pointGoal = 0;
-	};
+		message = "You haven't set a goal yet.";
+	}
+	if (points >= pointGoal) {
+		message = "Great job, you've completed this goal! Want to set a new one?";
+	}
+	else {
+		message = "You've earned " + points + " out of " + pointGoal;
+	}
+	pointDisplay.innerText = message; 
 
-	let workoutGoal = data["Workout Goal"];
-
-	if (workoutGoal == null) {
-		workoutGoal = 0;
-	};
-	
-	pointDisplay.innerText = "You've earned out of " + pointGoal + " points!"
-	setterDisplay.innerText = "You've earned out of " + pointGoal + " points!"
 };
+
+function displayWorkoutGoals (workouts, workoutGoal) { 
+
+	let workoutDisplay = document.getElementById("workout-progress");
+
+	if (workouts == null) {
+		workouts = 0;
+	} 
+	if (workoutGoal == null) {
+		message = "You haven't set a goal yet.";
+	}
+	if (workouts >= workoutGoal) {
+		message = "Great job, you've completed this goal! Want to set a new one?";
+	}
+	else {
+		message = "You've completed " + workouts + " out of " + workoutGoal + " workouts.";
+	}
+	workoutDisplay.innerText = message;
+
+};
+
+function setPointGoal () {
+	alert("Hello")
+}
+
+function setWorkoutGoal () {
+	alert("Hello")
+}
 
 getProfile();
 getDailyUpdate();
