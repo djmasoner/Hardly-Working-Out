@@ -215,8 +215,12 @@ app.get('/view_exercises', function(req, res){
   });
 });
 
+// Pulls competitors based on ranking -> wins/losses/points
 app.get('/view_competitors', function(req, res){
-  pool.query('SELECT * FROM user', function(err, rows, fields){
+  pool.query('SELECT * FROM user ORDER BY wins DESC, losses ASC, challenge_points DESC', function(err, rows, fields){
+    if (err) {
+      console.log(err);
+    }
     var competitorsArray = [];
     competitorsArray.push(req.session.userData);
     competitorsArray.push(rows);
@@ -224,11 +228,49 @@ app.get('/view_competitors', function(req, res){
   });
 });
 
-// Goes through and updates winners and losers for challenges
-app.get('/totals_win_loss', function(req, res){
+// Goes through and updates the leaderboard
+app.get('/update_leaderboard', function(req, res){
 
-  // UPDATE HERE
-  res.send('Success'); 
+  // Selects all the users and for each one
+  // checks the challenges for wins and losses for that user
+  // If the user's wins/losses in the user table doesn't match - updates
+  pool.query('SELECT * FROM user', function(err, rows, fields){
+      pool.query('SELECT * FROM challenges', function(err2, rows2, fields2){
+        for (var i = 0; i < rows.length; i++) {
+        var wins = 0;
+        var losses = 0;
+        for (var j = 0; j < rows2.length; j++) {
+          if (rows2[j].winner == rows[i].Username) {
+            wins++;
+          }
+          if (rows2[j].loser == rows[i].Username) {
+            losses++;
+          }
+        }
+        if (rows[i].wins != wins) {
+          pool.query("UPDATE user SET wins=? WHERE Username=? ",
+          [wins, rows[i].Username], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+            };
+          });
+        }
+        if (rows[i].losses != losses) {
+          pool.query("UPDATE user SET losses=? WHERE Username=? ",
+          [losses, rows[i].Username], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+            };
+          });
+        }
+      }
+      });
+  });
+  res.send('Leaderboard Updated');
 });
 
 // Goes through and updates winners and losers for challenges

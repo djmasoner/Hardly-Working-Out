@@ -26,8 +26,10 @@ function viewCompetitors(){
 	    	var cell3 = document.createElement("td");
 	    	var cell4 = document.createElement("td");
 	    	var cell5 = document.createElement("td");
+	    	var cell6 = document.createElement("td");
 
 	    	// These are the variables created from the DB
+	    	var challengeRank = document.createTextNode(i+1);
 	    	var challengeName = document.createTextNode(data[i].Name);
 	    	var challengeWins = document.createTextNode(data[i].wins);
 	    	var challengeLosses = document.createTextNode(data[i].losses);
@@ -49,17 +51,19 @@ function viewCompetitors(){
 	    	};
 	    	
 		    // Appending the variables to the cells
-		    cell1.appendChild(challengeName);
-		    cell2.appendChild(challengeWins);
-		    cell3.appendChild(challengeLosses);
-		    cell4.appendChild(challengePoints);
-		    cell5.appendChild(challengeSelect);
+		    cell1.appendChild(challengeRank);
+		    cell2.appendChild(challengeName);
+		    cell3.appendChild(challengeWins);
+		    cell4.appendChild(challengeLosses);
+		    cell5.appendChild(challengePoints);
+		    cell6.appendChild(challengeSelect);
 
 	    	row.appendChild(cell1);
 	    	row.appendChild(cell2);
 	    	row.appendChild(cell3);
 	    	row.appendChild(cell4);
 	    	row.appendChild(cell5);
+	    	row.appendChild(cell6);
 	    	
 		    // Appends row to the table
 		  	challengeBody.appendChild(row);
@@ -214,10 +218,10 @@ function checkWinLoss(){
 	req.send(null);
 };
 
-function totalsWinLoss(){
+function leaderboard(){
     var req = new XMLHttpRequest();
 
-    req.open('GET', serverUrl+'/totals_win_loss', true);
+    req.open('GET', serverUrl+'/update_leaderboard', true);
     
     req.withCredentials = false;
 	req.onload = function (e) {
@@ -238,6 +242,6 @@ function totalsWinLoss(){
 };
 
 checkWinLoss();
-totalsWinLoss();
+leaderboard();
 viewCompetitors();
 viewActiveChallenges();
