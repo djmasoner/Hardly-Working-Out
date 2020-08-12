@@ -224,15 +224,103 @@ app.get('/view_competitors', function(req, res){
   });
 });
 
+// Goes through and updates winners and losers for challenges
+app.get('/totals_win_loss', function(req, res){
+
+  // UPDATE HERE
+  res.send('Success'); 
+});
+
+// Goes through and updates winners and losers for challenges
+app.get('/update_win_loss', function(req, res){
+  today = new Date();
+  today.setDate(today.getDate());
+
+  // Four possible loss permutations
+  pool.query('SELECT * FROM challenges', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1 && rows[i].competitor_complete == 1 && today > rows[i].end_date && rows[i].user_complete == 0 && rows[i].winner == null && rows[i].loser == null) {
+        
+        pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
+          [rows[i].competitor, rows[i].username, rows[i].challenge_id], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+              console.log(rows[i].username + ' Forfeit')
+            };
+        });
+      };
+    };
+  });
+  pool.query('SELECT * FROM challenges', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1 && rows[i].competitor_complete == 0 && today > rows[i].end_date && rows[i].user_complete == 1 && rows[i].winner == null && rows[i].loser == null) {
+        
+        pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
+          [rows[i].username, rows[i].competitor, rows[i].challenge_id], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+              console.log(rows[i].competitor + ' Forfeit')
+            };
+        });
+      };
+    };
+  });
+  pool.query('SELECT * FROM challenges', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1 && rows[i].competitor_complete == 1 && rows[i].username_points >= rows[i].competitor_points && rows[i].user_complete == 1 && rows[i].winner == null && rows[i].loser == null) {
+        
+        pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
+          [rows[i].username, rows[i].competitor, rows[i].challenge_id], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+              console.log('Win')
+            };
+        });
+      };
+    };
+  });
+  pool.query('SELECT * FROM challenges', function(err, rows, fields){
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].accept == 1 && rows[i].competitor_complete == 1 && rows[i].username_points < rows[i].competitor_points && rows[i].user_complete == 1 && rows[i].winner == null && rows[i].loser == null) {
+        pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
+          [rows[i].competitor, rows[i].username, rows[i].challenge_id], function(err, result){
+            if (err) {
+              console.log(err)
+            };
+            if (result) {
+              console.log('Win')
+            };
+        });
+      };
+    };
+  });
+  res.send('Success'); 
+});
+
 app.get('/view_active_challenges', function(req, res){
+
+  // Captures both competitor and user challenges that are accepted and not completed
   pool.query('SELECT * FROM challenges WHERE competitor = "'+req.session.userData+'"', function(err, rows, fields){
     var activeChallengesArray = [];
     for (var i = 0; i < rows.length; i++) {
-      if (rows[i].accept == 1) {
+      if (rows[i].accept == 1 && rows[i].competitor_complete == 0 && rows[i].winner == null && rows[i].loser == null) {
         activeChallengesArray.push(rows[i]);
       };
     };
-    res.send(activeChallengesArray);
+    pool.query('SELECT * FROM challenges WHERE username = "'+req.session.userData+'"', function(err, rows, fields){
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].accept == 1 && rows[i].user_complete == 0 && rows[i].winner == null && rows[i].loser == null) {
+          activeChallengesArray.push(rows[i]);
+        };
+      };
+      res.send(activeChallengesArray);
+    });
   });
 });
 
@@ -357,6 +445,68 @@ app.post('/save_workout', function(req, res){
       };
     }
   );
+});
+
+app.post('/save_challenge', function(req, res){
+  // Converts favorite true/false to 0/1 for DB
+  var isFavorite = false;
+  if (req.body.favorite == true) {
+    isFavorite = 1;
+  } else {
+    isFavorite = 0;
+  };
+
+  // Grabs current date
+  var todayDate = new Date();
+  todayDate.setDate(todayDate.getDate());
+  todayDate = todayDate.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO completed_workouts (`username`, `title`, `description`, `favorite`, `points`, `rating`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log('Workout Saved');
+      };
+    }
+  );
+  pool.query('SELECT challenge_points FROM user WHERE username = "'+req.session.userData+'"', function(err, rows, fields){
+    var new_points = rows[0].challenge_points + req.body.challengePoints;
+    pool.query("UPDATE user SET challenge_points=? WHERE username=? ",
+    [new_points, req.session.userData], function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log('Points Added');
+      };
+    });   
+  });
+  pool.query('SELECT * FROM challenges WHERE challenge_id = "'+req.session.doChallengeId+'"', function(err, rows, fields){
+    if (rows[0].username == req.session.userData) {
+      pool.query("UPDATE challenges SET username_points=?, user_complete=? WHERE challenge_id=? ",
+      [req.body.challengePoints, 1, req.session.doChallengeId], function(err, result){
+        if (err) {
+          console.log(err)
+        };
+        if (result) {
+          res.send('Success');
+        };
+      });
+    } else {
+      pool.query("UPDATE challenges SET competitor_points=?, competitor_complete=? WHERE challenge_id=? ",
+      [req.body.challengePoints, 1, req.session.doChallengeId], function(err, result){
+        if (err) {
+          console.log(err)
+        };
+        if (result) {
+          res.send('Success');
+        };
+      });
+    }
+  });
 });
 
 app.post('/save_competitor', function(req, res){

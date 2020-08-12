@@ -1,6 +1,5 @@
 // Submit button for building a workout
 document.getElementById("start").addEventListener("click", startTimer);
-//document.getElementById("pause").addEventListener("click", startTimer);
 document.getElementById("submit_workout").addEventListener("click", endWorkout);
 
 // We'll eventually set this to use the total time of a workout.
@@ -385,8 +384,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 };
 
 function endWorkout () {
-  // Link to the modal page
-  //window.location.assign("http://localhost:3000/modal_button.html");
+  event.preventDefault();
 
   var completeArray = [];
   var pointsEarned = 0;
@@ -402,31 +400,27 @@ function endWorkout () {
   var results = Object();
   results.completedExercises = completeArray;
   results.points = pointsEarned;
-  results.challengePoints = challengePointsEarned;
+  results.challengePoints = Math.round(challengePointsEarned);
   results.description = document.getElementById('workout_description').value;
   results.title = document.getElementById('workout_name').value;
   results.rating = document.getElementById('workout_rating').value;
   results.favorite = document.getElementById('workout_favorite').checked;
 
-  console.log(results);
-
-//   var localUrl = 'http://localhost:3000/save_workout';
-//   var flipUrl = 'http://flip2.engr.oregonstate.edu:1344/save_workout';
-//   var req = new XMLHttpRequest();
+  var req = new XMLHttpRequest();
   
-//   //req.open('POST', flipUrl, true);
-//   req.open('POST', localUrl, true);
-//   req.setRequestHeader('Content-Type', 'application/json');
-//   req.addEventListener('load',function(){
-//     if(req.status >= 200 && req.status < 400){
-//   		console.log(req.responseText);
-//     } else {
-//       console.log("Error in network request: " + req.statusText);
-//     }});
+  //req.open('POST', flipUrl, true);
+  req.open('POST', serverUrl+'/save_challenge', true);
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.addEventListener('load',function(){
+    if(req.status >= 200 && req.status < 400){
+  		console.log(req.responseText);
+    } else {
+      console.log("Error in network request: " + req.statusText);
+    }});
 
-//   req.send(JSON.stringify(results));
-// alert("Congrats on your Challenge!");
-// window.location.href = "/welcome";
+  req.send(JSON.stringify(results));
+alert("Congrats on your Challenge!");
+window.location.href = "/welcome";
 
 }
 

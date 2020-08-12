@@ -25,11 +25,13 @@ function viewCompetitors(){
 	    	var cell2 = document.createElement("td");
 	    	var cell3 = document.createElement("td");
 	    	var cell4 = document.createElement("td");
+	    	var cell5 = document.createElement("td");
 
 	    	// These are the variables created from the DB
 	    	var challengeName = document.createTextNode(data[i].Name);
-	    	var challengeRanking = document.createTextNode(data[i].Ranking);
-	    	var challengePoints = document.createTextNode(data[i].Points);
+	    	var challengeWins = document.createTextNode(data[i].wins);
+	    	var challengeLosses = document.createTextNode(data[i].losses);
+	    	var challengePoints = document.createTextNode(data[i].challenge_points);
 	    	
 	    	// Create the challenge button
 	    	// Does not show a challenge button for the user
@@ -48,14 +50,16 @@ function viewCompetitors(){
 	    	
 		    // Appending the variables to the cells
 		    cell1.appendChild(challengeName);
-		    cell2.appendChild(challengeRanking);
-		    cell3.appendChild(challengePoints);
-		    cell4.appendChild(challengeSelect);
+		    cell2.appendChild(challengeWins);
+		    cell3.appendChild(challengeLosses);
+		    cell4.appendChild(challengePoints);
+		    cell5.appendChild(challengeSelect);
 
 	    	row.appendChild(cell1);
 	    	row.appendChild(cell2);
 	    	row.appendChild(cell3);
 	    	row.appendChild(cell4);
+	    	row.appendChild(cell5);
 	    	
 		    // Appends row to the table
 		  	challengeBody.appendChild(row);
@@ -93,9 +97,11 @@ function viewActiveChallenges(){
 	    	var cell1 = document.createElement("td");
 	    	var cell2 = document.createElement("td");
 	    	var cell3 = document.createElement("td");
+	    	var cell4 = document.createElement("td");
 
 	    	// These are the variables created from the DB
 	    	var activeCompetitor = document.createTextNode(data[i].username);
+	    	var activeChallenged = document.createTextNode(data[i].competitor);
 	    	var activeDate = document.createTextNode((data[i].end_date).substring(0,10));
 	    	
 	    	// Create the start challenge button
@@ -110,12 +116,14 @@ function viewActiveChallenges(){
 	    	
 		    // Appending the variables to the cells
 		    cell1.appendChild(activeCompetitor);
-		    cell2.appendChild(activeDate);
-		    cell3.appendChild(activeSelect);
+		    cell2.appendChild(activeChallenged);
+		    cell3.appendChild(activeDate);
+		    cell4.appendChild(activeSelect);
 
 	    	row.appendChild(cell1);
 	    	row.appendChild(cell2);
 	    	row.appendChild(cell3);
+	    	row.appendChild(cell4);
 	    	
 		    // Appends row to the table
 		  	activeBody.appendChild(row);
@@ -183,5 +191,53 @@ function startWorkout(id){
 
 };
 
+function checkWinLoss(){
+    var req = new XMLHttpRequest();
+
+    req.open('GET', serverUrl+'/update_win_loss', true);
+    
+    req.withCredentials = false;
+	req.onload = function (e) {
+	  	if (req.readyState === 4) {
+	    	if (req.status === 200) {
+
+	    	console.log('Expired Losses Checked');
+		
+	    	} else {
+	      		console.error(req.statusText);
+	    	}
+	  	}
+	};
+	req.onerror = function (e) {
+	  console.error(req.statusText);
+	};
+	req.send(null);
+};
+
+function totalsWinLoss(){
+    var req = new XMLHttpRequest();
+
+    req.open('GET', serverUrl+'/totals_win_loss', true);
+    
+    req.withCredentials = false;
+	req.onload = function (e) {
+	  	if (req.readyState === 4) {
+	    	if (req.status === 200) {
+
+	    	console.log('Win Loss Column');
+		
+	    	} else {
+	      		console.error(req.statusText);
+	    	}
+	  	}
+	};
+	req.onerror = function (e) {
+	  console.error(req.statusText);
+	};
+	req.send(null);
+};
+
+checkWinLoss();
+totalsWinLoss();
 viewCompetitors();
 viewActiveChallenges();
