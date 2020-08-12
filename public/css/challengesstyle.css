@@ -1,0 +1,32 @@
+table {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    border-collapse: collapse;
+    width: 100%;
+    ;
+  }
+  
+td, th {
+    text-align: center;
+    padding: 8px;
+    }
+  
+tr:nth-child(even) {
+    background-color: #b3d9f8be;
+    }
+
+tr:nth-child(odd) {
+    background-color: #dddddd;
+    }
+body {
+    background-image: url("weights-dumbbells-exercise-gym.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    }
+
+h2{
+    color: #fff;
+    text-shadow: 2px 2px black;
+    text-align:center;
+}

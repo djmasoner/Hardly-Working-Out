@@ -1,3 +1,7 @@
+.body{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 #time {
     position: center;
     width: 100%;
@@ -51,6 +55,10 @@
     border-radius: 20px;
     border: 1px;
     border-style: outset;
+    color: rgb(40, 3, 248);
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
     position: relative;
     padding: 5px;
     align-items: center;
@@ -224,3 +232,40 @@ progress:before {
   left:0;
   right:0;
 }        
+
+#explain{
+    justify-content: space-around;
+    float: right;
+    display: inline-flex;
+    position: relative;
+    padding: 5px;
+    align-items: center;
+}
+
+#points-display{
+    color: #fff;
+    text-shadow: 2px 2px black;
+}
+
+#time{
+    color: #fff;
+    text-shadow: 2px 2px black;
+}
+
+#timer-controls{
+    justify-content: space-around;
+    float: right;
+    display: inline-flex;
+    position: relative;
+    padding: 5px;
+    align-items: center;
+}
+
+#progressBar{
+    color: #fff;
+
+}
+h1, h2, h3{
+    color: #fff;
+    text-shadow: 2px 2px black;
+}

@@ -13,27 +13,9 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
   <title>Gameplay Workout App</title>
 
-  <style>
-    .bd-placeholder-img {
-      font-size: 1.125rem;
-      text-anchor: middle;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-          }
-        }
-    </style>
-
 </head>
 <body>
-<body>
-	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+	<div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
 		<header class="masthead mb-auto">
 		  <div class="inner">
 		  <h3 class="masthead-brand">Working Out</h3>
@@ -54,14 +36,14 @@
 		  </nav>
 		</div>
 	</header>
+	<br>
+	<br>
 
-<div class="main-container">
+<div class="container">
 	<div class="profile-container">
   	<table id="profileTable">
 			<thead>
-				<tr>
-					<th>Profile Information</th>
-				</tr>
+				<tr><h1>Profile Information</h1></tr>
 			</thead>
 			<tbody>
 				<tr>
@@ -90,12 +72,28 @@
 				</tr>
 			</tbody>
 		</table>
+		<br>
 		<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
 	  Daily Update
 		</button>
+		<br>
+		<br>
+		<div class="dashboard-container">
+			<div class="dashboard-tracker" id="daily-dashboard">
+				<canvas id="daily-chart" width="700" height="350"></canvas>
+			</div>
+	
+			<div class="weight-tracker" id="weight-dashboard">
+				<canvas id="weight-chart" width="300" height="150"></canvas>
+			</div>
+	
+			<div class="height-tracker" id="height-dashboard">
+				<canvas id="height-chart" width="300" height="150"></canvas>
+			</div>
+		</div>
 	</div>
-		<div class="workouts-container">
-		<h4>Completed Workouts</h4>
+		<div class="container">
+		<h2>Completed Workouts</h2>
 		<table id="workoutsTable">
 			<thead>
 				<tr>
@@ -111,19 +109,7 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="dashboard-container">
-		<div class="dashboard-tracker" id="daily-dashboard">
-			<canvas id="daily-chart" width="700" height="350"></canvas>
-		</div>
-
-		<div class="weight-tracker" id="weight-dashboard">
-			<canvas id="weight-chart" width="300" height="150"></canvas>
-		</div>
-
-		<div class="height-tracker" id="height-dashboard">
-			<canvas id="height-chart" width="300" height="150"></canvas>
-		</div>
-	</div>
+	<br>
 	<div id="goal-progress-display">
 		<h2>Goals Progress</h2>
 		<div id="point-progress">
@@ -131,15 +117,17 @@
 		<div id="workout-progress">
 		</div>
 	</div>
+	<br>
 	<div id="goal-setter-display">
-		<h2>Here's where you can set your goals</h2>
+		<h1>Set Your Goals</h1>
+		<br>
 		<div>
-			How many points would you like to earn? 
+			<h4>How many points would you like to earn?</h4>
 			<input type=number min=1> 
 			<button class="btn btn-dark" id="setPointGoal">Set Workout Goal</button>
 		</div>
 		<div>
-			How many workouts would you like to complete? 
+			<h4>How many workouts would you like to complete?</h4>
 			<input type=number min=1> 
 			<button class="btn btn-dark" id="setWorkoutGoal">Set Workout Goal</button>
 		</div>

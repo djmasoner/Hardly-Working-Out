@@ -1,5 +1,6 @@
 table {
-    font-family: arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
     border-collapse: collapse;
     width: 100%;
     ;
@@ -7,18 +8,42 @@ table {
   
 td, th {
     border: 1px solid #dddddd;
-    text-align: left;
+    text-align: center;
     padding: 8px;
     }
   
 tr:nth-child(even) {
     background-color: #b3d9f8be;
     }
-  
+
+tr:nth-child(odd) {
+    background-color: #dddddd;
+    }
 body {
-    background-color: #cccccc;
+    background-image: url("weights-dumbbells-exercise-gym.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .85;
     }
 
-    body {
-        background-image: url("gym.jpg");
-    }
+h1, h2, h3, h4{
+    color: #fff;
+    text-shadow: 2px 2px black;
+}
+
+#point-progress{
+    background-color: #dddddd;
+    color: black;
+    text-align: center;
+    padding: 3px;
+    opacity: .75;
+}
+
+#workout-progress{
+    background-color: #dddddd;
+    color: black;
+    text-align: center;
+    padding: 3px;
+    opacity: .75;
+}
