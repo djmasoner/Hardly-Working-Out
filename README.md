@@ -1,3 +1,6 @@
+# Hardly-Working-Out
+This is a gameplay workout app where users can set goals, complete workouts, and challenge other users to complete various workouts. 
+
 # TO RUN Hardly Working(Out) v0.3:
 1. Open the Hardly Working Out file in your terminal
 2. Make sure that you are connected to the OSU VPN (so the system can access the SQL databases, we use Cisco Connect)
@@ -8,6 +11,6 @@
 7. This will take you to the landing page where you can log in using your GitHub account
 
 # Important Notes:
-1. Authentiction occurs through Oregon State University, you must have a OSU account to log in and create an account. 
+1. Authentication occurs through Oregon State University, you must have an OSU account to log in and create an account. 
 2. You'll need to authenticate with DUO. 
 3. Authentication doesn't work with Safari.
