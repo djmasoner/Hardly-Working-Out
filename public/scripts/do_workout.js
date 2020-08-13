@@ -12,6 +12,7 @@ var exerciseArray = [];
 var totalPoints = 0;
 var clear_bool = false;
 var exerciseWindow;
+var workoutStarted = false;
 
 // Used to determine if the time needed to start on the timer is the beginning time
 // Saved time and current time variables declared
@@ -121,8 +122,9 @@ function setUpProgressBar(startTime, endTime, savedMid, update) {
 
 function startTimer(){
 
-	// Call the exercise timer
-	exerciseTimer();
+	// Call the exercise timer and set workoutStarted to true
+  exerciseTimer();
+  workoutStarted = true;
 
 	// Get the start time and display element
 	if (beginningTime == true) {
@@ -283,19 +285,23 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
   completeBtn.addEventListener('click', function() {
-    if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
-	  this.className = this.className + " done";
-	  if (beginningTime == true) {
-	  	skipEllapsed = skipEllapsed + (mins * 60000);
-	  } else {
-	  	savedEllapsed = savedEllapsed + (mins * 60000);
-	  };
-    currentTime = currentTime - exerciseTimeLeft;
-    exerciseNum++;
-    clear_bool = true;
-    exerciseTimer();
-	  displayPoints();
-	};
+    if (workoutStarted == true) {
+      if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
+        this.className = this.className + " done";
+        if (beginningTime == true) {
+          skipEllapsed = skipEllapsed + (mins * 60000);
+        } else {
+          savedEllapsed = savedEllapsed + (mins * 60000);
+        };
+        currentTime = currentTime - exerciseTimeLeft;
+        exerciseNum++;
+        clear_bool = true;
+        exerciseTimer();
+        displayPoints();
+        };
+    } else {
+      alert("You have to start the workout timer first!")
+    }
   });
 	// Add button ID and inner text here.
 	divOne.appendChild(completeBtn)
@@ -330,7 +336,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	newSpan.appendChild(exerciseSet);
 
 	// Creating the skip button
-	let skipBtn = creatSkipButton(id);
+	let skipBtn = creatSkipButton(id, mins);
 	newSpan.appendChild(skipBtn);
 
 	let divTwo = document.createElement("div");
@@ -343,7 +349,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	display.appendChild(divTwo);
 };
 
-function creatSkipButton (id) {
+function creatSkipButton (id, mins) {
   //Create the HTML button and set it's attributes
 	skipButton = document.createElement("button");
 	skipButton.id = id;
