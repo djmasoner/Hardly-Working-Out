@@ -134,7 +134,7 @@ app.post('/create', function(req, res){
         });
       };
   });
-  var exObj = [{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}];
+  var exObj = JSON.stringify([{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}]);
   startDay = new Date();
   endDay = new Date();
 
@@ -152,8 +152,9 @@ app.post('/create', function(req, res){
         console.log(err)
       };
       if (result) {
+        console.log('Challenge added');
         res.redirect('/login');
-        console.log('Challenge added')
+        
       };
     }
   );
