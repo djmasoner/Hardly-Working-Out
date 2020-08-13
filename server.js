@@ -101,27 +101,6 @@ app.post('/create', function(req, res){
       };
       if (result) {
 
-        var exObj = [{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}];
-        startDay = new Date();
-        endDay = new Date();
-
-        startDay.setDate(startDay.getDate());
-        startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        endDay.setDate(endDay.getDate()+7);
-        endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
-
-        pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
-          ['daviryan', req.session.userData, startDay, endDay, exObj], 
-          function(err, result){
-            if (err) {
-              console.log(err)
-            };
-            if (result) {
-              console.log('Challenge added')
-            };
-          }
-        );
-
         // Creates a table for daily tracking of BMI
         var createDailyTable = "CREATE TABLE daily_"+req.session.userData+"(" +
           "id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -147,7 +126,7 @@ app.post('/create', function(req, res){
                 };
                 if (result) {
                   // Not currently working - workaround exists on the front end
-                  res.redirect('/login');
+                  
                 };
               }
             );
@@ -155,6 +134,29 @@ app.post('/create', function(req, res){
         });
       };
   });
+  var exObj = [{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}];
+  startDay = new Date();
+  endDay = new Date();
+
+  console.log(exObj);
+
+  startDay.setDate(startDay.getDate());
+  startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  endDay.setDate(endDay.getDate()+7);
+  endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
+    ['daviryan', req.session.userData, startDay, endDay, exObj], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        res.redirect('/login');
+        console.log('Challenge added')
+      };
+    }
+  );
 });
 
 // Display the profile information
