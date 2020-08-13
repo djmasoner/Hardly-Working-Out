@@ -139,6 +139,7 @@ app.post('/create', function(req, res){
   // Creates a table for daily tracking of BMI
   var createCalendar = "CREATE TABLE calendar_"+req.session.userData+"(" +
     "cal_id INT PRIMARY KEY AUTO_INCREMENT," +
+    "username VARCHAR(255) NOT NULL," +
     "occasion VARCHAR(255) NOT NULL," +
     "invited_count INT," +
     "year INT," +
@@ -159,8 +160,6 @@ app.post('/create', function(req, res){
   var exObj = JSON.stringify([{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}]);
   startDay = new Date();
   endDay = new Date();
-
-  console.log(exObj);
 
   startDay.setDate(startDay.getDate());
   startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
