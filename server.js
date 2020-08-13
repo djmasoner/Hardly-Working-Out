@@ -665,16 +665,10 @@ app.get('/working_out', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
-app.get('/saved_workouts', function(req, res){
-
-  if (req.session.userData) {
-
-    // SQL query requires string to be in "double" quotes
-    pool.query('SELECT * FROM Generic_Workouts_Table', function(err, rows, fields){
-      res.send(rows);
-    });
-  };
-});
+app.get('/prebuilt_workouts', function(req, res){
+  var path = 'prebuilt_workouts.html';
+  res.sendFile(path, {root: './public'})
+})
 
 console.log('Express started on port 3000; press Ctrl-C to terminate.');
 http.createServer(app).listen(3000);
