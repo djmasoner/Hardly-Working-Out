@@ -181,6 +181,34 @@ app.post('/create', function(req, res){
   );
 });
 
+
+// Calendar Endpoints
+
+
+// Display the profile information
+app.get('/get_calendar', function(req, res){
+    // SQL query requires string to be in "double" quotes
+    pool.query('SELECT * FROM calendar_'+req.session.userData, function(err, rows, fields){
+      res.send(rows);
+    });
+});
+
+app.post('/update_calendar', function(req, res){
+  pool.query("INSERT INTO calendar_"+req.session.userData+" (`username`, `occasion`, `invited_count`, `year`, `month`, `day`) VALUES (?, ?, ?, ?, ?, ?)",
+    [req.session.userData, req.body.occasion, req.body.invited_count, req.body.year, req.body.month, req.body.day], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log('Successful Calendar Update');
+        res.send('Successful Calendar Update');
+      };
+    }
+  );
+});
+
+
 // Display the profile information
 app.get('/display_profile', function(req, res){
   if (req.session.userData) {
