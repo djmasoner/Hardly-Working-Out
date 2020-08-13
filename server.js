@@ -656,11 +656,6 @@ app.get('/build_challenge', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
-app.get('/workouts_completed', function(req, res){
-  var path = 'workouts_completed.html';
-  res.sendFile(path, {root: './public'})
-})
-
 app.get('/test_workout', function(req, res){
   var path = 'test_workout.html';
   res.sendFile(path, {root: './public'})
