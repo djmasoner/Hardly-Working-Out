@@ -503,12 +503,10 @@ function displayPointGoals (earned, goal) {
 		earned = 0;
 	}
 	if (goal == null || goal == 0) {
-		message = "Try setting a goal or refreshing the page";
-	}
-	if (earned >= goal && goal != null) {
+		message = "You haven't set a goal yet.";
+	} else if (earned >= goal && goal != null) {
 		message = "Great job, you've completed you point goal! Set a new one below if you'd like.";
-	}
-	else {
+	} else {
 		message = "You've earned " + earned + " out of " + goal;
 	}
 	pointDisplay.innerText = message; 
@@ -518,16 +516,14 @@ function displayPointGoals (earned, goal) {
 function displayWorkoutGoals (workouts, workoutGoal) { 
 	let workoutDisplay = document.getElementById("workout-progress");
 
-	if (workouts == null) {
+	if (workouts === null) {
 		workouts = 0;
 	} 
-	if (workoutGoal == null || workoutGoal == 0) {
+	if (workoutGoal === null || workoutGoal == 0) {
 		message = "You haven't set a goal yet.";
-	}
-	if (workouts >= workoutGoal && workoutGoal != null) {
+	} else if (workouts >= workoutGoal && workoutGoal != null) {
 		message = "Great job, you've completed your workout goal! Set a new one below if you'd like.";
-	}
-	else {
+	} else {
 		message = "You've completed " + workouts + " out of " + workoutGoal + " workouts.";
 	}
 	workoutDisplay.innerText = message;

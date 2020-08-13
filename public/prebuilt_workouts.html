@@ -8,7 +8,7 @@
     <link href="/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/workoutstyle.css" media="screen">
     <link rel="stylesheet" href="css/welcomestyle.css" media="screen">
-    <title>Select a Workout</title>
+    <title>Select a Pre-built Workout</title>
   </head>
 
 <body>
@@ -23,9 +23,7 @@
           <button id="workout-btn" class="nav-link">Workouts</button>
           <ul id="nav-list">
             <li><a class="nav-link" href="/build_workouts">Make Your Own</a></li>
-            <li><a class="nav-link" href="/saved_workouts">Choose a Workout</a></li>
-<!--             <li><a class="nav-link" href="#">Saved Workouts</a></li>
-            <li><a class="nav-link" href="/workouts_completed">Workout History</a></li> -->
+            <li><a class="nav-link" href="/prebuilt_workouts">Choose a Workout</a></li>
           </ul>
         </div>
         <a class="nav-link" href="/challenges">Challenges</a>
@@ -35,30 +33,20 @@
     </div>
 </header>
 
-    <h2>Build your workout from the options below!</h2>
+    <h2>Start one of our pre-built workouts!</h2>
 
     <table id="exerciseTable">
       <thead>
         <tr>
-          <th>Exercise Name</th>
-          <th>Muscle Group</th>
-          <th>Equipment</th>
-          <th>Difficulty</th>
-          <th>Rating</th>
-          <th>Points</th>
-          <th>Reps</th>
-          <th>Time</th>
-          <th>Select</th>
-          <th>Sets</th>
+          <th>Workout Name</th>
+          <th>Description</th>
+          <th>Start the Workout</th>
         </tr>
       </thead>
       <tbody id="exerciseBody">
       </tbody>
     </table>
 
-    <button type="button" class="btn btn-dark" id="buildWorkout">
-      Build Workout!
-    </button>
   </div>  
 
 </body>
