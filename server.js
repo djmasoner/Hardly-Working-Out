@@ -403,6 +403,32 @@ app.post('/update_challenge', function(req, res){
   });
 });
 
+app.post('/update_point_goal', function(req, res){
+  pool.query("UPDATE user SET pointsGoal=? WHERE Username=? ",
+    [req.body.newPointGoal, req.body.username], function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log(req.body)
+        res.send('Success');
+      };
+  });
+});
+
+app.post('/update_workout_goal', function(req, res){
+  pool.query("UPDATE user SET workoutGoal=? WHERE Username=? ",
+    [req.body.newWorkoutGoal, req.body.username], function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log(req.body)
+        res.send('Success');
+      };
+  });
+});
+
 app.get('/get_active_challenges', function(req, res){
   activeArray = [];
 

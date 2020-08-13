@@ -5,6 +5,7 @@ document.getElementById("setWorkoutGoal").addEventListener("click", setWorkoutGo
 
 workoutGoal = null;
 pointGoal = null;
+var username = null;
 
 function getProfile(){
 
@@ -19,6 +20,7 @@ function getProfile(){
 	    	// SQL Data returned from server
 			var data = JSON.parse(req.responseText);
 			getGoals(data);
+			username = data.Username;
 
 
 	    	// Clear the data currently there
@@ -477,55 +479,53 @@ function getDailyUpdate(){
 function getGoals (data) {
 	pointGoal = data.pointsGoal;
 	workoutGoal = data.workoutGoal;
-	console.log(pointGoal, workoutGoal)
+	console.log(pointGoal)
 }
 
 function calculateGoals (data) {
 	var workoutsComplete = 0
-	var pointsTotal = 0
+	var pointsEarned = 0
 
 
 	for (i=0; i<data.length; i++) {
 		workoutsComplete = i + 1 
-		pointsTotal = pointsTotal + data[i].points
+		pointsEarned = pointsEarned + data[i].points
 	}
 
-	displayPointGoals(pointsTotal, pointGoal);
+	displayPointGoals(pointsEarned, pointGoal);
 	displayWorkoutGoals(workoutsComplete, workoutGoal);
 };
 
-function displayPointGoals (points, pointGoal) { 
-// seems sporadic with when it works and doesn't it's buggy
+function displayPointGoals (earned, goal) { 
 	let pointDisplay = document.getElementById("point-progress");
 
-	if (points == null) {
-		points = 0;
+	if (earned == null) {
+		earned = 0;
 	}
-	if (pointGoal == null) {
-		message = "You haven't set a goal yet.";
+	if (goal == null || goal == 0) {
+		message = "Try setting a goal or refreshing the page";
 	}
-	if (points >= pointGoal) {
-		message = "Great job, you've completed this goal! Want to set a new one?";
+	if (earned >= goal && goal != null) {
+		message = "Great job, you've completed you point goal! Set a new one below if you'd like.";
 	}
 	else {
-		message = "You've earned " + points + " out of " + pointGoal;
+		message = "You've earned " + earned + " out of " + goal;
 	}
 	pointDisplay.innerText = message; 
 
 };
 
 function displayWorkoutGoals (workouts, workoutGoal) { 
-
 	let workoutDisplay = document.getElementById("workout-progress");
 
 	if (workouts == null) {
 		workouts = 0;
 	} 
-	if (workoutGoal == null) {
+	if (workoutGoal == null || workoutGoal == 0) {
 		message = "You haven't set a goal yet.";
 	}
-	if (workouts >= workoutGoal) {
-		message = "Great job, you've completed this goal! Want to set a new one?";
+	if (workouts >= workoutGoal && workoutGoal != null) {
+		message = "Great job, you've completed your workout goal! Set a new one below if you'd like.";
 	}
 	else {
 		message = "You've completed " + workouts + " out of " + workoutGoal + " workouts.";
@@ -535,11 +535,47 @@ function displayWorkoutGoals (workouts, workoutGoal) {
 };
 
 function setPointGoal () {
-	alert("Hello")
-}
+	newPointGoal = document.getElementById("point-input").value
+	
+	var updateObject = new Object();
+	updateObject.username = username;
+	updateObject.newPointGoal = newPointGoal;
+	
+	var req = new XMLHttpRequest();
+	
+	req.open('POST', serverUrl+'/update_point_goal', true);
+	req.setRequestHeader('Content-Type', 'application/json');
+	req.addEventListener('load',function(){
+		if(req.status >= 200 && req.status < 400){
+			console.log("Sent Successfully")
+		} else {
+		console.log("Error in network request: " + req.statusText);
+		}});
+	
+	req.send(JSON.stringify(updateObject));
+	
+};
 
 function setWorkoutGoal () {
-	alert("Hello")
+	newWorkoutGoal = document.getElementById("workout-input").value
+	
+	var updateObject = new Object();
+	updateObject.username = username;
+	updateObject.newWorkoutGoal = newWorkoutGoal;
+	
+	var req = new XMLHttpRequest();
+	
+	req.open('POST', serverUrl+'/update_workout_goal', true);
+	req.setRequestHeader('Content-Type', 'application/json');
+	req.addEventListener('load',function(){
+		if(req.status >= 200 && req.status < 400){
+			console.log("Sent Successfully")
+		} else {
+		console.log("Error in network request: " + req.statusText);
+		}});
+	
+	req.send(JSON.stringify(updateObject));
+	
 }
 
 getProfile();
