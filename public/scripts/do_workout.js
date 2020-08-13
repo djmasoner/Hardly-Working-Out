@@ -277,10 +277,10 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 
 	// Creating the completion number button.
 	let completeBtn = document.createElement("button");
-	completeBtn.className = "complete-btn";
+	completeBtn.className = "complete-btn " + id;
   completeBtn.textContent = num + 1;
-  completeBtn.id = id;
   completeBtn.value = points * sets;
+  completeBtn.id = num + 1;
 
   // Adds an event listener to the complete buttons to add their value to the array
   // and add a class of done to the button.
@@ -336,7 +336,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	newSpan.appendChild(exerciseSet);
 
 	// Creating the skip button
-	let skipBtn = creatSkipButton(id, mins);
+	let skipBtn = creatSkipButton(id, mins, num);
 	newSpan.appendChild(skipBtn);
 
 	let divTwo = document.createElement("div");
@@ -349,29 +349,35 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
 	display.appendChild(divTwo);
 };
 
-function creatSkipButton (id, mins) {
+function creatSkipButton (id, mins, num) {
   //Create the HTML button and set it's attributes
 	skipButton = document.createElement("button");
-	skipButton.id = id;
+	skipButton.value = num + 1; 
 	skipButton.innerText = "Skip";
   skipButton.className = "skip right-btn";
 
   //Create the event listener which makes sure the workout can't be both skipped or completed again.
   skipButton.addEventListener('click', function() {
-    if (this.classList.contains("done") == false && this.classList.contains("skipped") == false) {
-      let btnId = this.getAttribute('id');
-      let compId = document.getElementById(btnId);
-      if (beginningTime == true) {
-		  	skipEllapsed = skipEllapsed + (mins * 60000);
-		  } else {
-		  	savedEllapsed = savedEllapsed + (mins * 60000);
-		  };
-		  currentTime = currentTime - exerciseTimeLeft;
-		  clear_bool = true;
-		  exerciseNum++;
-    	  exerciseTimer();
-      compId.className = compId.className + " skipped";
-	  };
+    if (workoutStarted == true) {
+      var btnId = this.getAttribute('value');
+      console.log(btnId)
+      var compId = document.getElementById(btnId);
+      console.log(compId)
+      if (compId.classList.contains("done") == false && compId.classList.contains("skipped") == false) {
+        if (beginningTime == true) {
+          skipEllapsed = skipEllapsed + (mins * 60000);
+        } else {
+          savedEllapsed = savedEllapsed + (mins * 60000);
+        };
+        currentTime = currentTime - exerciseTimeLeft;
+        clear_bool = true;
+        exerciseNum++;
+          exerciseTimer();
+        compId.className = compId.className + " skipped";
+      };
+    } else {
+      alert("You have to start the workout timer first!")
+    }
   });
   return skipButton
 };
