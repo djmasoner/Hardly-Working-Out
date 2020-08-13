@@ -215,6 +215,12 @@ app.get('/view_exercises', function(req, res){
   });
 });
 
+app.get('/view_prebuilt_workouts', function(req, res){
+  pool.query("SELECT * FROM prebuilt_workouts", function(err, rows, fields){
+    res.send(rows);
+  });
+});
+
 // Pulls competitors based on ranking -> wins/losses/points
 app.get('/view_competitors', function(req, res){
   pool.query('SELECT * FROM user ORDER BY wins DESC, losses ASC, challenge_points DESC', function(err, rows, fields){
@@ -389,6 +395,11 @@ app.get('/profile', function(req, res){
 app.post('/begin_workout', function(req, res){
     req.session.newWorkout = req.body;
     res.send('success');
+});
+
+app.post('/start_prebuilt_workout', function(req, res){
+  req.session.newWorkout = req.body;
+  res.send('success');
 });
 
 app.post('/update_challenge', function(req, res){

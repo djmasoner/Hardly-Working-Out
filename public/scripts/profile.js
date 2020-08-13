@@ -549,6 +549,7 @@ function setPointGoal () {
 		}});
 	
 	req.send(JSON.stringify(updateObject));
+	window.location.href = "/profile";
 	
 };
 
@@ -571,6 +572,7 @@ function setWorkoutGoal () {
 		}});
 	
 	req.send(JSON.stringify(updateObject));
+	window.location.href = "/profile";
 	
 }
 
