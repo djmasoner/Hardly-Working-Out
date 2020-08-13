@@ -126,7 +126,7 @@ app.post('/create', function(req, res){
                 };
                 if (result) {
                   // Not currently working - workaround exists on the front end
-                  res.redirect('/login');
+                  
                 };
               }
             );
@@ -134,6 +134,30 @@ app.post('/create', function(req, res){
         });
       };
   });
+  var exObj = JSON.stringify([{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}]);
+  startDay = new Date();
+  endDay = new Date();
+
+  console.log(exObj);
+
+  startDay.setDate(startDay.getDate());
+  startDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  endDay.setDate(endDay.getDate()+7);
+  endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
+    ['daviryan', req.session.userData, startDay, endDay, exObj], 
+    function(err, result){
+      if (err) {
+        console.log(err)
+      };
+      if (result) {
+        console.log('Challenge added');
+        res.redirect('/login');
+        
+      };
+    }
+  );
 });
 
 // Display the profile information
@@ -653,11 +677,6 @@ app.get('/build_workouts', function(req, res){
 
 app.get('/build_challenge', function(req, res){
   var path = 'build_challenge.html';
-  res.sendFile(path, {root: './public'})
-})
-
-app.get('/workouts_completed', function(req, res){
-  var path = 'workouts_completed.html';
   res.sendFile(path, {root: './public'})
 })
 
