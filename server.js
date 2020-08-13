@@ -101,6 +101,7 @@ app.post('/create', function(req, res){
       };
       if (result) {
 
+
         // Creates a table for daily tracking of BMI
         var createDailyTable = "CREATE TABLE daily_"+req.session.userData+"(" +
           "id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -134,6 +135,27 @@ app.post('/create', function(req, res){
         });
       };
   });
+
+  // Creates a table for daily tracking of BMI
+  var createCalendar = "CREATE TABLE calendar_"+req.session.userData+"(" +
+    "cal_id INT PRIMARY KEY AUTO_INCREMENT," +
+    "occasion VARCHAR(255) NOT NULL," +
+    "invited_count INT," +
+    "year INT," +
+    "month INT," +
+    "day INT," +
+    "FOREIGN KEY (username) REFERENCES user (username))";
+
+  // Creates the daily tracking of BMI table for the user
+  pool.query(createCalendar, function(err, result){
+    if (err) {
+      console.log(err)
+    };
+    if (result) {
+      console.log(req.session.userData+' Calendar Created')
+    }
+  });
+
   var exObj = JSON.stringify([{"id":"PU","sets":"1"},{"id":"DI","sets":"1"},{"id":"BU","sets":"2"}]);
   startDay = new Date();
   endDay = new Date();
@@ -146,7 +168,7 @@ app.post('/create', function(req, res){
   endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
-    ['daviryan', req.session.userData, startDay, endDay, exObj], 
+    ['hudsonsc', req.session.userData, startDay, endDay, exObj], 
     function(err, result){
       if (err) {
         console.log(err)
