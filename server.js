@@ -469,6 +469,7 @@ app.get('/profile', function(req, res){
 
 app.post('/begin_workout', function(req, res){
     req.session.newWorkout = req.body;
+    console.log(req.session.newWorkout);
     res.send('success');
 });
 
@@ -534,6 +535,9 @@ app.get('/get_active_challenges', function(req, res){
 
 app.get('/do_workout', function(req, res){
   returnArray = [];
+  for (var f = 0; f < req.session.newWorkout.length; f++) {
+    returnArray.push(0);
+  };
   pool.query('SELECT * FROM Exercises', function(err, rows, fields){
     for (var i = 0; i < rows.length; i++) {
       for (var j = 0; j < req.session.newWorkout.length; j++) {
@@ -543,7 +547,7 @@ app.get('/do_workout', function(req, res){
             "exercise": rows[i],
             "sets": req.session.newWorkout[j].sets
           };
-          returnArray.push(exerciseReturnObject);
+          returnArray[j] = exerciseReturnObject;
         };
       };
     };
@@ -555,6 +559,9 @@ app.get('/do_challenge_workout', function(req, res){
   pool.query('SELECT exercise_array FROM challenges WHERE challenge_id = "'+req.session.doChallengeId+'"', function(err, rows, fields){
     var exercisesArray = JSON.parse(rows[0].exercise_array);
     returnArray = [];
+    for (var f = 0; f < exercisesArray.length; f++) {
+      returnArray.push(0);
+    };
     pool.query('SELECT * FROM Exercises', function(err, rows, fields){
     for (var i = 0; i < rows.length; i++) {
       for (var j = 0; j < exercisesArray.length; j++) {
@@ -564,7 +571,7 @@ app.get('/do_challenge_workout', function(req, res){
             "exercise": rows[i],
             "sets": exercisesArray[j].sets
           };
-          returnArray.push(exerciseReturnObject);
+          returnArray[j] = exerciseReturnObject;
         };
       };
     };

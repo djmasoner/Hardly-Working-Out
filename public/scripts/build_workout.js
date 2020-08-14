@@ -30,6 +30,7 @@ function viewExercises(){
 	    	var cell8 = document.createElement("td");
 	    	var cell9 = document.createElement("td");
 	    	var cell10 = document.createElement("td");
+	    	var cell11 = document.createElement("td");
 
 	    	// These are the variables created from the DB
 	    	var exerciseName = document.createTextNode(data[i].Name);
@@ -54,6 +55,12 @@ function viewExercises(){
 				exerciseSets.min = 1;
 				exerciseSets.max = 5;
 
+			// Create the order #
+	    	var exerciseOrder = document.createElement('input');
+				exerciseOrder.type = "number";
+				exerciseOrder.min = 1;
+				exerciseOrder.max = 50;
+
 		    // Appending the variables to the cells
 		    cell1.appendChild(exerciseName);
 		    cell2.appendChild(exerciseTargeted);
@@ -65,6 +72,7 @@ function viewExercises(){
 		    cell8.appendChild(exerciseTime);
 		    cell9.appendChild(exerciseSelect);
 		    cell10.appendChild(exerciseSets);
+		    cell11.appendChild(exerciseOrder);
 
 	    	row.appendChild(cell1);
 	    	row.appendChild(cell2);
@@ -76,6 +84,7 @@ function viewExercises(){
 	    	row.appendChild(cell8);
 	    	row.appendChild(cell9);
 	    	row.appendChild(cell10);
+	    	row.appendChild(cell11);
 	    	
 		    // Appends row to the table
 		  	exerciseBody.appendChild(row);
@@ -99,30 +108,52 @@ function buildWorkout(){
     var exerciseArray = [];
 
     // Grabs the selected rows for building a workout
-    var t = document.getElementById("exerciseTable");
-	for (var i = 1, row; row = t.rows[i]; i++) {
-		//var t = document.getElementById("table"), // This have to be the ID of your table, not the tag
-    	d = t.getElementsByTagName("tr")[i],
+    var x = document.getElementById("exerciseTable");
+    for (var i = 1, row; row = x.rows[i]; i++) {
+		e = x.getElementsByTagName("tr")[i],
     	
-    	r1 = d.getElementsByTagName("td")[8];
-    	r2 = d.getElementsByTagName("td")[9];
-	   		if (r1.children[0].checked == true) {
-	   			var exerciseObject = new Object();
-	   			if (r2.children[0].value == "") {
-	   				alert('Please specify a number of sets');
-	   				return;
-	   			};
-	   			exerciseObject = {
-			        "id": r1.children[0].id,
-			        "sets": r2.children[0].value
-			    };
-			    exerciseArray.push(exerciseObject);
+    	z = e.getElementsByTagName("td")[8];
+	   		if (z.children[0].checked == true) {
+			   	exerciseArray.push(0);
 	   		};
 	}
 	if (exerciseArray.length == 0) {
 		alert("You didn't select any exercises!");
 		return;
 	};
+	var t = document.getElementById("exerciseTable");
+	for (var i = 1, row; row = t.rows[i]; i++) {
+
+    	d = t.getElementsByTagName("tr")[i],
+    	
+    	r1 = d.getElementsByTagName("td")[8];
+    	r2 = d.getElementsByTagName("td")[9];
+    	r3 = d.getElementsByTagName("td")[10];
+	   		if (r1.children[0].checked == true) {
+	   			var exerciseObject = new Object();
+	   			if (r2.children[0].value == "") {
+	   				alert('Please specify a number of sets');
+	   				return;
+	   			};
+	   			if (r3.children[0].value == "") {
+	   				alert('Please specify an order for your exercises');
+	   				return;
+	   			};
+	   			if (r3.children[0].value-1 > exerciseArray.length) {
+	   				alert('The order specified for an exercise exceeds the total exercises selected');
+	   				return;
+	   			};
+	   			if (typeof exerciseArray[r3.children[0].value-1] == 'object') {
+	   				alert('You have specified 2+ exercises for the same order');
+	   				return;
+	   			};
+	   			exerciseObject = {
+			        "id": r1.children[0].id,
+			        "sets": r2.children[0].value
+			    };
+			    exerciseArray[r3.children[0].value-1] = exerciseObject;
+	   		};
+	}
 
     var req = new XMLHttpRequest();
 
