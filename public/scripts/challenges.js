@@ -41,7 +41,8 @@ function viewCompetitors(){
 	    		var challengeSelect = document.createTextNode("");
 	    	} else {
 				var challengeSelect = document.createElement('button');
-	    		challengeSelect.innerHTML = "Challenge Me!";
+				challengeSelect.innerHTML = "Challenge Me!";
+				challengeSelect.className = "btn";
 	    		var competitor = data[i].Username;
 	    		challengeSelect.onclick = (function(competitor, user){
      				return function(){
@@ -110,6 +111,7 @@ function viewActiveChallenges(){
 	    	
 	    	// Create the start challenge button
 			var activeSelect = document.createElement('button');
+			activeSelect.className = "btn";
 	    	activeSelect.innerHTML = "Start Challenge!";
 	    	var id = data[i].challenge_id;
 	    	activeSelect.onclick = (function(id){

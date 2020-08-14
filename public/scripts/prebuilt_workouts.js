@@ -28,7 +28,8 @@ function preBuiltWorkouts(){
 	    	
 	    	// Create the challenge button
 			var workoutSelect = document.createElement('button');
-    		workoutSelect.innerHTML = "Start Workout";
+			workoutSelect.innerHTML = "Start Workout!";
+			workoutSelect.className = "btn";
     		var workoutArray = data[i].exercise_array;
     		workoutSelect.onclick = (function(workoutArray){
  				return function(){

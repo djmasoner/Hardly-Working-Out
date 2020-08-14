@@ -31,7 +31,7 @@ h2{
     text-align:center;
 }
 
-.btn{
+input[class="button"] {
     background:#34b3a0;
     color:#fff;
     font-size:1.2rem;
