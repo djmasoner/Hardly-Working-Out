@@ -1,19 +1,48 @@
 document.getElementById("done-button").addEventListener("click", updateDB);
-// Setup the calendar with the current date
-$(document).ready(function(){
-    var date = new Date();
-    var today = date.getDate();
-    // Set click handlers for DOM elements
-    $(".right-button").click({date: date}, next_year);
-    $(".left-button").click({date: date}, prev_year);
-    $(".month").click({date: date}, month_click);
-    $("#add-button").click({date: date}, new_event);
-    // Set current month as active
-    $(".months-row").children().eq(date.getMonth()).addClass("active-month");
-    init_calendar(date);
-    var events = check_events(today, date.getMonth()+1, date.getFullYear());
-    show_events(events, months[date.getMonth()], today);
-});
+
+// Global variable to hold all saved events
+var event_data = {events: []};
+
+// Queries server for saved events and renders the calendar
+function displayCalendarEvents(){
+    var req = new XMLHttpRequest();
+
+    req.open('GET', serverUrl+'/get_calendar', true);
+    
+    req.withCredentials = false;
+    req.onload = function (e) {
+        if (req.readyState === 4) {
+            if (req.status === 200) {
+
+            // SQL Event Data returned from server
+            event_data.events = JSON.parse(req.responseText);
+
+            // Setup the calendar with the current date
+            $(document).ready(function(){
+                var date = new Date();
+                var today = date.getDate();
+                // Set click handlers for DOM elements
+                $(".right-button").click({date: date}, next_year);
+                $(".left-button").click({date: date}, prev_year);
+                $(".month").click({date: date}, month_click);
+                $("#add-button").click({date: date}, new_event);
+                // Set current month as active
+                $(".months-row").children().eq(date.getMonth()).addClass("active-month");
+                init_calendar(date);
+                var events = check_events(today, date.getMonth()+1, date.getFullYear());
+                show_events(events, months[date.getMonth()], today);
+            });
+
+            } else {
+                console.error(req.statusText);
+            }
+        }
+    };
+    req.onerror = function (e) {
+      console.error(req.statusText);
+    };
+    req.send(null);
+};
 
 // Initialize the calendar by appending the HTML dates
 function init_calendar(date) {
@@ -149,7 +178,6 @@ function new_event(event) {
         }
         else {
             $("#dialog").hide(250);
-            console.log("new event");
             new_event_json(name, count, date, day);
             date.setDate(day);
             init_calendar(date);
@@ -167,6 +195,22 @@ function new_event_json(name, count, date, day) {
         "day": day
     };
     event_data["events"].push(event);
+
+    // Where we post and save the new event to the server
+    var req = new XMLHttpRequest();
+
+    req.open('POST', serverUrl+'/update_calendar', true);
+    req.setRequestHeader('Content-Type', 'application/json');
+    req.addEventListener('load',function(){
+      if(req.status >= 200 && req.status < 400){
+        console.log('Event Saved');
+      } else {
+        console.log("Error in network request: " + req.statusText);
+      }});
+
+    req.send(JSON.stringify(event));
+
+
 }
 
 // Display all events of the selected date in card views
@@ -174,7 +218,6 @@ function show_events(events, month, day) {
     // Clear the dates container
     $(".events-container").empty();
     $(".events-container").show(250);
-    console.log(event_data["events"]);
     // If there are no events for this date, notify the user
     if(events.length===0) {
         var event_card = $("<div class='event-card'></div>");
@@ -215,95 +258,8 @@ function check_events(day, month, year) {
     return events;
 }
 
-// Given data for events in JSON format
-var event_data = {
-    "events": [
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-        {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10
-    },
-        {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10
-    },
-        {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10
-    },
-        {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10,
-        "cancelled": true
-    },
-    {
-        "occasion": " Repeated Test Event ",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 10
-    },
-    {
-        "occasion": " Test Event",
-        "invited_count": 120,
-        "year": 2017,
-        "month": 5,
-        "day": 11
-    }
-
-    ]
-};
+// Calls the get function that grabs all saved events
+displayCalendarEvents();
 
 const months = [
     "January",
