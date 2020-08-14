@@ -27,7 +27,7 @@ var clientSecret = '52d3f8b62aaa23c2d06448fff85c4461c620af67'
 passport.use(new GoogleStrategy({
     clientID:     '374190043347-pbn6hpfs7norvdg7p78oilsdghsvacfa.apps.googleusercontent.com',
     clientSecret: 'CkQIBtJTqUR-LyCR8jgRIMR0',
-    callbackURL: 'http://localhost:3000/auth/google/callback',
+    callbackURL: 'http://flip2.engr.oregonstate.edu:1344/auth/google/callback',
     passReqToCallback   : true
   },
   function(request, accessToken, refreshToken, profile, done) {
@@ -763,4 +763,4 @@ app.get('/prebuilt_workouts', function(req, res){
 })
 
 console.log('Express started on port 3000; press Ctrl-C to terminate.');
-http.createServer(app).listen(3000);
+http.createServer(app).listen(1344);
