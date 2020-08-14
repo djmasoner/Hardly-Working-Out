@@ -32,22 +32,24 @@
 <body>
     <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="masthead mb-auto">
-    <div class="inner">
-      <h3 class="masthead-brand">Welcome</h3>
-      <nav class="nav nav-masthead justify-content-center">
+    <div class="container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+        <h3 class="masthead-brand">Working Out</h3>
+        <nav class="nav nav-masthead justify-content-center">
         <a class="nav-link active" href="/welcome">Home</a>
         <div class="options" id="options">
-          <button id="workout-btn">Workout</button>
+          <button id="workout-btn" class="nav-link">Workouts</button>
           <ul id="nav-list">
-            <li><a class="nav-link" href="/build_workouts">Make Your Own</a></li>
-            <li><a class="nav-link" href="/prebuilt_workouts">Choose a Workout</a></li>
+          <li><a class="nav-link" href="/build_workouts">Make Your Own</a></li>
+          <li><a class="nav-link" href="/prebuilt_workouts">Choose a Workout</a></li>
           </ul>
         </div>
         <a class="nav-link" href="/challenges">Challenges</a>
         <a class="nav-link" href="/profile">Profile</a>
         <a class="nav-link" href="/logout">Logout</a>
-      </nav>
-    </div>
+        </nav>
+      </div>
   </header>
 
   <main role="main" class="inner cover">
