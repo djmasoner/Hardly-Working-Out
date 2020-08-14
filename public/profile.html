@@ -74,17 +74,20 @@
 		<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
 	  Daily Update
 		</button>
+    <button type="button" class="btn btn-dark" id="calendar">
+	  Schedule A Workout
+		</button>
 		<br>
 		<br>
 		<div class="dashboard-container">
 			<div class="dashboard-tracker" id="daily-dashboard">
 				<canvas id="daily-chart" width="700" height="350"></canvas>
 			</div>
-	
+
 			<div class="weight-tracker" id="weight-dashboard">
 				<canvas id="weight-chart" width="300" height="150"></canvas>
 			</div>
-	
+
 			<div class="height-tracker" id="height-dashboard">
 				<canvas id="height-chart" width="300" height="150"></canvas>
 			</div>
@@ -121,12 +124,12 @@
 		<br>
 		<div>
 			<h4>How many points would you like to earn?</h4>
-			<input type=number min=1 id="point-input"> 
+			<input type=number min=1 id="point-input">
 			<button class="btn btn-dark" id="setPointGoal">Set Point Goal</button>
 		</div>
 		<div>
 			<h4>How many workouts would you like to complete?</h4>
-			<input type=number min=1 id="workout-input"> 
+			<input type=number min=1 id="workout-input">
 			<button class="btn btn-dark" id="setWorkoutGoal">Set Workout Goal</button>
 		</div>
 	</div>

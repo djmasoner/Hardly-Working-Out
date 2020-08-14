@@ -82,7 +82,7 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
     res.redirect('/create');
   } else {
     res.redirect('/welcome');
-  }; 
+  };
 });
 
 app.get('/logout', function(req, res){
@@ -94,7 +94,7 @@ app.post('/create', function(req, res){
   var userData = JSON.stringify(req.body);
 
   pool.query("INSERT INTO user (`username`, `name`, `gender`, `weight`, `height`, `age`, `bmi`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [req.session.userData, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi], 
+    [req.session.userData, req.body.name, req.body.gender, req.body.weight, req.body.height, req.body.age, req.body.bmi],
     function(err, result){
       if (err) {
         console.log(err)
@@ -120,14 +120,14 @@ app.post('/create', function(req, res){
           if (result) {
             console.log(req.session.userData+' Profile Created')
             pool.query("INSERT INTO daily_"+req.session.userData+" (`username`, `height`, `weight`, `bmi`, `date`) VALUES (?, ?, ?, ?, ?)",
-              [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.today], 
+              [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.today],
               function(err, result){
                 if (err) {
                   console.log(err)
                 };
                 if (result) {
                   // Not currently working - workaround exists on the front end
-                  
+
                 };
               }
             );
@@ -167,7 +167,7 @@ app.post('/create', function(req, res){
   endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
-    ['hudsonsc', req.session.userData, startDay, endDay, exObj], 
+    ['hudsonsc', req.session.userData, startDay, endDay, exObj],
     function(err, result){
       if (err) {
         console.log(err)
@@ -175,7 +175,7 @@ app.post('/create', function(req, res){
       if (result) {
         console.log('Challenge added');
         res.redirect('/login');
-        
+
       };
     }
   );
@@ -194,8 +194,10 @@ app.get('/get_calendar', function(req, res){
 });
 
 app.post('/update_calendar', function(req, res){
+  //
+//  var userData = JSON.stringify(req.body);
   pool.query("INSERT INTO calendar_"+req.session.userData+" (`username`, `occasion`, `invited_count`, `year`, `month`, `day`) VALUES (?, ?, ?, ?, ?, ?)",
-    [req.session.userData, req.body.occasion, req.body.invited_count, req.body.year, req.body.month, req.body.day], 
+    [req.session.userData, req.body.occasion, req.body.invited_count, req.body.year, req.body.month, req.body.day],
     function(err, result){
       if (err) {
         console.log(err)
@@ -245,7 +247,7 @@ app.post('/daily_update', function(req, res){
     // If the user hasn't yet made a daily update, create that daily update
     if (todayValid == true) {
       pool.query("INSERT INTO daily_"+req.session.userData+" (`username`, `height`, `weight`, `bmi`, `date`) VALUES (?, ?, ?, ?, ?)",
-        [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.date], 
+        [req.session.userData, req.body.height, req.body.weight, req.body.bmi, req.body.date],
         function(err, result){
           if (err) {
             console.log(err)
@@ -268,7 +270,7 @@ app.post('/daily_update', function(req, res){
     } else {
       res.send('Failure');
     };
-  }); 
+  });
 });
 
 // Get daily profile data for the daily tracking chart
@@ -361,7 +363,7 @@ app.get('/update_win_loss', function(req, res){
   pool.query('SELECT * FROM challenges', function(err, rows, fields){
     for (var i = 0; i < rows.length; i++) {
       if (rows[i].accept == 1 && rows[i].competitor_complete == 1 && today > rows[i].end_date && rows[i].user_complete == 0 && rows[i].winner == null && rows[i].loser == null) {
-        
+
         pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
           [rows[i].competitor, rows[i].username, rows[i].challenge_id], function(err, result){
             if (err) {
@@ -377,7 +379,7 @@ app.get('/update_win_loss', function(req, res){
   pool.query('SELECT * FROM challenges', function(err, rows, fields){
     for (var i = 0; i < rows.length; i++) {
       if (rows[i].accept == 1 && rows[i].competitor_complete == 0 && today > rows[i].end_date && rows[i].user_complete == 1 && rows[i].winner == null && rows[i].loser == null) {
-        
+
         pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
           [rows[i].username, rows[i].competitor, rows[i].challenge_id], function(err, result){
             if (err) {
@@ -393,7 +395,7 @@ app.get('/update_win_loss', function(req, res){
   pool.query('SELECT * FROM challenges', function(err, rows, fields){
     for (var i = 0; i < rows.length; i++) {
       if (rows[i].accept == 1 && rows[i].competitor_complete == 1 && rows[i].username_points >= rows[i].competitor_points && rows[i].user_complete == 1 && rows[i].winner == null && rows[i].loser == null) {
-        
+
         pool.query("UPDATE challenges SET winner=?, loser=? WHERE challenge_id=? ",
           [rows[i].username, rows[i].competitor, rows[i].challenge_id], function(err, result){
             if (err) {
@@ -421,7 +423,7 @@ app.get('/update_win_loss', function(req, res){
       };
     };
   });
-  res.send('Success'); 
+  res.send('Success');
 });
 
 app.get('/view_active_challenges', function(req, res){
@@ -587,7 +589,7 @@ app.post('/save_workout', function(req, res){
   todayDate = todayDate.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   pool.query("INSERT INTO completed_workouts (`username`, `title`, `description`, `favorite`, `points`, `rating`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate], 
+    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate],
     function(err, result){
       if (err) {
         console.log(err)
@@ -614,7 +616,7 @@ app.post('/save_challenge', function(req, res){
   todayDate = todayDate.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   pool.query("INSERT INTO completed_workouts (`username`, `title`, `description`, `favorite`, `points`, `rating`, `date`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate], 
+    [req.session.userData, req.body.title, req.body.description, isFavorite, req.body.points, req.body.rating, todayDate],
     function(err, result){
       if (err) {
         console.log(err)
@@ -634,7 +636,7 @@ app.post('/save_challenge', function(req, res){
       if (result) {
         console.log('Points Added');
       };
-    });   
+    });
   });
   pool.query('SELECT * FROM challenges WHERE challenge_id = "'+req.session.doChallengeId+'"', function(err, rows, fields){
     if (rows[0].username == req.session.userData) {
@@ -687,7 +689,7 @@ app.post('/send_challenge', function(req, res){
   endDay.toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   pool.query("INSERT INTO challenges (`username`, `competitor`, `start_date`, `end_date`, `exercise_array`) VALUES (?, ?, ?, ?, ?)",
-    [req.session.userData, req.session.newCompetitor, startDay, endDay, exercise_JSON], 
+    [req.session.userData, req.session.newCompetitor, startDay, endDay, exercise_JSON],
     function(err, result){
       if (err) {
         console.log(err)
@@ -697,6 +699,11 @@ app.post('/send_challenge', function(req, res){
       };
     }
   );
+});
+//
+app.get('/calendar', function(req, res){
+  var path = 'calendar.html';
+  res.sendFile(path, {root: './public'});
 });
 
 app.get('/welcome', function(req, res){

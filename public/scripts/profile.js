@@ -2,7 +2,7 @@
 document.getElementById("updateBmi").addEventListener("click", dailyUpdate);
 document.getElementById("setPointGoal").addEventListener("click", setPointGoal);
 document.getElementById("setWorkoutGoal").addEventListener("click", setWorkoutGoal);
-
+document.getElementById("calendar").addEventListener("click", setCalendar);
 workoutGoal = null;
 pointGoal = null;
 var username = null;
@@ -70,7 +70,7 @@ function getCompletedWorkouts(){
     var req = new XMLHttpRequest();
 
     req.open('GET', serverUrl+'/view_completed_workouts', true);
-    
+
     req.withCredentials = false;
 	req.onload = function (e) {
 	  	if (req.readyState === 4) {
@@ -119,7 +119,7 @@ function getCompletedWorkouts(){
 	    	row.appendChild(cell4);
 	    	row.appendChild(cell5);
 	    	row.appendChild(cell6);
-	    	
+
 		    // Appends row to the table
 		  	workoutsBody.appendChild(row);
 		}
@@ -141,8 +141,8 @@ function dailyUpdate(){
     var req = new XMLHttpRequest();
 
     // Input values
-    var height = document.getElementById('heightInput').value; 
-    var weight = document.getElementById('weightInput').value; 
+    var height = document.getElementById('heightInput').value;
+    var weight = document.getElementById('weightInput').value;
     var bmi = (weight / (height**2)) * 703;
     var day = new Date();
     day = document.getElementById('dateInput').value;
@@ -187,7 +187,7 @@ function dailyUpdate(){
 
 function getDailyUpdate(){
 	// Pulls daily data from the user's tracking database
-	
+
 	dateRange = [];
 	dateRangeDash = [];
 	trackDay = new Date();
@@ -232,7 +232,7 @@ function getDailyUpdate(){
     						pos = j;
     						inData = true;
     					};
-					
+
 					};
 					if (inData == false) {
 						if (pos == -1) {
@@ -244,7 +244,7 @@ function getDailyUpdate(){
 							dailyWeight.push(data[j-1].weight);
 							dailyHeight.push(data[j-1].height);
 						};
-						
+
 					};
 				};
 
@@ -252,7 +252,7 @@ function getDailyUpdate(){
     			// First we must clear any chart already there - https://stackoverflow.com/questions/3387427/remove-element-by-id
     			var removeChart = document.getElementById('daily-chart');
 				removeChart.parentNode.removeChild(removeChart);
-				document.getElementById('daily-dashboard').innerHTML += 
+				document.getElementById('daily-dashboard').innerHTML +=
 				'<canvas id="daily-chart" width="300" height="250"></canvas>'
 
 				// Now we create the chart object, and pass through the data
@@ -260,25 +260,25 @@ function getDailyUpdate(){
 				var dailyChart = new Chart(ctx, {
 				    type: 'line',
 				    data: {
-				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9], 
-				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3], 
+				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9],
+				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3],
 				        dateRange[2], dateRange[1], dateRange[0]],
 				        datasets: [{
 				        	fill: false,
 				            label: 'Daily BMI',
-				            data: [dailyBmi[0], dailyBmi[1], dailyBmi[2], dailyBmi[3], dailyBmi[4], dailyBmi[5], dailyBmi[6], 
+				            data: [dailyBmi[0], dailyBmi[1], dailyBmi[2], dailyBmi[3], dailyBmi[4], dailyBmi[5], dailyBmi[6],
 				            dailyBmi[7], dailyBmi[8], dailyBmi[9], dailyBmi[10], dailyBmi[11], dailyBmi[12], dailyBmi[13], dailyBmi[14]],
 				            backgroundColor: [
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
 				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)'
 				            ],
 				            borderColor: [
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 
-				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)'  
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)',
+				            	'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 0, 0, 1)'
 				            ],
 				            borderWidth: 1
 				        }]
@@ -302,7 +302,7 @@ function getDailyUpdate(){
 				                    beginAtZero: true,
 				                    // Found the follow splitting function for chart.js here:
 				                    // https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
-				                    userCallback: function(value, index, values) { 
+				                    userCallback: function(value, index, values) {
 								        value = value.toString();
 								        value = value.split(/(?=(?:...)*$)/);
 								        value = value.join(',');
@@ -323,7 +323,7 @@ function getDailyUpdate(){
     			// First we must clear any chart already there - https://stackoverflow.com/questions/3387427/remove-element-by-id
     			var removeWeightChart = document.getElementById('weight-chart');
 				removeWeightChart.parentNode.removeChild(removeWeightChart);
-				document.getElementById('weight-dashboard').innerHTML += 
+				document.getElementById('weight-dashboard').innerHTML +=
 				'<canvas id="weight-chart" width="300" height="250"></canvas>'
 
 				// Now we create the chart object, and pass through the data
@@ -332,25 +332,25 @@ function getDailyUpdate(){
 				var weightChart = new Chart(ctx, {
 				    type: 'line',
 				    data: {
-				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9], 
-				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3], 
+				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9],
+				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3],
 				        dateRange[2], dateRange[1], dateRange[0]],
 				        datasets: [{
 				        	fill: false,
 				            label: 'Daily Weight',
-				            data: [dailyWeight[0], dailyWeight[1], dailyWeight[2], dailyWeight[3], dailyWeight[4], dailyWeight[5], dailyWeight[6], 
+				            data: [dailyWeight[0], dailyWeight[1], dailyWeight[2], dailyWeight[3], dailyWeight[4], dailyWeight[5], dailyWeight[6],
 				            dailyWeight[7], dailyWeight[8], dailyWeight[9], dailyWeight[10], dailyWeight[11], dailyWeight[12], dailyWeight[13], dailyWeight[14]],
 				            backgroundColor: [
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
 				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)'
 				            ],
 				            borderColor: [
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 
-				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)'  
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)',
+				            	'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(0, 255, 0, 1)'
 				            ],
 				            borderWidth: 1
 				        }]
@@ -374,7 +374,7 @@ function getDailyUpdate(){
 				                    beginAtZero: true,
 				                    // Found the follow splitting function for chart.js here:
 				                    // https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
-				                    userCallback: function(value, index, values) { 
+				                    userCallback: function(value, index, values) {
 								        value = value.toString();
 								        value = value.split(/(?=(?:...)*$)/);
 								        value = value.join(',');
@@ -395,7 +395,7 @@ function getDailyUpdate(){
     			// First we must clear any chart already there - https://stackoverflow.com/questions/3387427/remove-element-by-id
     			var removeHeightChart = document.getElementById('height-chart');
 				removeHeightChart.parentNode.removeChild(removeHeightChart);
-				document.getElementById('height-dashboard').innerHTML += 
+				document.getElementById('height-dashboard').innerHTML +=
 				'<canvas id="height-chart" width="300" height="250"></canvas>'
 
 				// Now we create the chart object, and pass through the data
@@ -404,25 +404,25 @@ function getDailyUpdate(){
 				var heightChart = new Chart(ctx, {
 				    type: 'line',
 				    data: {
-				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9], 
-				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3], 
+				        labels: [dateRange[14], dateRange[13], dateRange[12], dateRange[11], dateRange[10], dateRange[9],
+				        dateRange[8], dateRange[7], dateRange[6], dateRange[5], dateRange[4], dateRange[3],
 				        dateRange[2], dateRange[1], dateRange[0]],
 				        datasets: [{
 				        	fill: false,
 				            label: 'Daily Height',
-				            data: [dailyHeight[0], dailyHeight[1], dailyHeight[2], dailyHeight[3], dailyHeight[4], dailyHeight[5], dailyHeight[6], 
+				            data: [dailyHeight[0], dailyHeight[1], dailyHeight[2], dailyHeight[3], dailyHeight[4], dailyHeight[5], dailyHeight[6],
 				            dailyHeight[7], dailyHeight[8], dailyHeight[9], dailyHeight[10], dailyHeight[11], dailyHeight[12], dailyHeight[13], dailyHeight[14]],
 				            backgroundColor: [
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
 				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)'
 				            ],
 				            borderColor: [
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 
-				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)'  
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)',
+				            	'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)', 'rgba(0, 0, 255, 1)'
 				            ],
 				            borderWidth: 1
 				        }]
@@ -446,7 +446,7 @@ function getDailyUpdate(){
 				                    beginAtZero: true,
 				                    // Found the follow splitting function for chart.js here:
 				                    // https://stackoverflow.com/questions/38800226/chart-js-add-commas-to-tooltip-and-y-axis
-				                    userCallback: function(value, index, values) { 
+				                    userCallback: function(value, index, values) {
 								        value = value.toString();
 								        value = value.split(/(?=(?:...)*$)/);
 								        value = value.join(',');
@@ -462,7 +462,7 @@ function getDailyUpdate(){
 				        }
 				    }
 				});
-				
+
 
 
 	    	} else {
@@ -488,7 +488,7 @@ function calculateGoals (data) {
 
 
 	for (i=0; i<data.length; i++) {
-		workoutsComplete = i + 1 
+		workoutsComplete = i + 1
 		pointsEarned = pointsEarned + data[i].points
 	}
 
@@ -496,7 +496,7 @@ function calculateGoals (data) {
 	displayWorkoutGoals(workoutsComplete, workoutGoal);
 };
 
-function displayPointGoals (earned, goal) { 
+function displayPointGoals (earned, goal) {
 	let pointDisplay = document.getElementById("point-progress");
 
 	if (earned == null) {
@@ -509,16 +509,16 @@ function displayPointGoals (earned, goal) {
 	} else {
 		message = "You've earned " + earned + " out of " + goal;
 	}
-	pointDisplay.innerText = message; 
+	pointDisplay.innerText = message;
 
 };
 
-function displayWorkoutGoals (workouts, workoutGoal) { 
+function displayWorkoutGoals (workouts, workoutGoal) {
 	let workoutDisplay = document.getElementById("workout-progress");
 
 	if (workouts === null) {
 		workouts = 0;
-	} 
+	}
 	if (workoutGoal === null || workoutGoal == 0) {
 		message = "You haven't set a goal yet.";
 	} else if (workouts >= workoutGoal && workoutGoal != null) {
@@ -532,13 +532,13 @@ function displayWorkoutGoals (workouts, workoutGoal) {
 
 function setPointGoal () {
 	newPointGoal = document.getElementById("point-input").value
-	
+
 	var updateObject = new Object();
 	updateObject.username = username;
 	updateObject.newPointGoal = newPointGoal;
-	
+
 	var req = new XMLHttpRequest();
-	
+
 	req.open('POST', serverUrl+'/update_point_goal', true);
 	req.setRequestHeader('Content-Type', 'application/json');
 	req.addEventListener('load',function(){
@@ -547,21 +547,21 @@ function setPointGoal () {
 		} else {
 		console.log("Error in network request: " + req.statusText);
 		}});
-	
+
 	req.send(JSON.stringify(updateObject));
 	window.location.href = "/profile";
-	
+
 };
 
 function setWorkoutGoal () {
 	newWorkoutGoal = document.getElementById("workout-input").value
-	
+
 	var updateObject = new Object();
 	updateObject.username = username;
 	updateObject.newWorkoutGoal = newWorkoutGoal;
-	
+
 	var req = new XMLHttpRequest();
-	
+
 	req.open('POST', serverUrl+'/update_workout_goal', true);
 	req.setRequestHeader('Content-Type', 'application/json');
 	req.addEventListener('load',function(){
@@ -570,10 +570,14 @@ function setWorkoutGoal () {
 		} else {
 		console.log("Error in network request: " + req.statusText);
 		}});
-	
+
 	req.send(JSON.stringify(updateObject));
 	window.location.href = "/profile";
-	
+
+}
+
+function setCalendar () {
+	window.location.href = "/calendar";
 }
 
 getProfile();
