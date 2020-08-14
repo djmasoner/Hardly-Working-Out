@@ -128,7 +128,14 @@ body {
   font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
   font-weight: 400;
   font-size: 14px;
-}
+    background-image: url("bikes.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: .87;
+    }
+
+
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
@@ -160,7 +167,7 @@ h6 {
 
 /* ==========================================================================
    #BACKGROUND
-   ========================================================================== */
+   ========================================================================== 
 .bg-blue {
   background: #2c6ed5;
 }
@@ -287,11 +294,11 @@ h6 {
 }
 
 .btn--blue {
-  background: #4272d7;
+  background: #34b3a0;
 }
 
 .btn--blue:hover {
-  background: #3868cd;
+  background: #278678;
 }
 
 /* ==========================================================================
