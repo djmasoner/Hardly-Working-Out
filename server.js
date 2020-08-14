@@ -469,7 +469,6 @@ app.get('/profile', function(req, res){
 
 app.post('/begin_workout', function(req, res){
     req.session.newWorkout = req.body;
-    console.log(req.session.newWorkout);
     res.send('success');
 });
 

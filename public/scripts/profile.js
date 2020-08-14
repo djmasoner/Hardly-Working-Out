@@ -253,7 +253,7 @@ function getDailyUpdate(){
     			var removeChart = document.getElementById('daily-chart');
 				removeChart.parentNode.removeChild(removeChart);
 				document.getElementById('daily-dashboard').innerHTML +=
-				'<canvas id="daily-chart" width="300" height="250"></canvas>'
+				'<canvas id="daily-chart" width="300" height="250"></canvas><style>#daily-chart { background-color: #cccccc; }</style>'
 
 				// Now we create the chart object, and pass through the data
     			var ctx = document.getElementById('daily-chart').getContext('2d');
@@ -324,7 +324,7 @@ function getDailyUpdate(){
     			var removeWeightChart = document.getElementById('weight-chart');
 				removeWeightChart.parentNode.removeChild(removeWeightChart);
 				document.getElementById('weight-dashboard').innerHTML +=
-				'<canvas id="weight-chart" width="300" height="250"></canvas>'
+				'<canvas id="weight-chart" width="300" height="250"></canvas><style>#weight-chart { background-color: #cccccc; }</style>'
 
 				// Now we create the chart object, and pass through the data
     			var ctx = document.getElementById('weight-chart').getContext('2d');
@@ -396,7 +396,7 @@ function getDailyUpdate(){
     			var removeHeightChart = document.getElementById('height-chart');
 				removeHeightChart.parentNode.removeChild(removeHeightChart);
 				document.getElementById('height-dashboard').innerHTML +=
-				'<canvas id="height-chart" width="300" height="250"></canvas>'
+				'<canvas id="height-chart" width="300" height="250"></canvas><style>#height-chart { background-color: #cccccc; }</style>'
 
 				// Now we create the chart object, and pass through the data
     			var ctx = document.getElementById('height-chart').getContext('2d');

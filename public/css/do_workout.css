@@ -269,3 +269,8 @@ h1, h2, h3{
     color: #fff;
     text-shadow: 2px 2px black;
 }
+
+button {
+    background-color: white;
+    color: black;
+}
