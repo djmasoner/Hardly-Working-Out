@@ -469,11 +469,13 @@ app.get('/profile', function(req, res){
 
 app.post('/begin_workout', function(req, res){
     req.session.newWorkout = req.body;
+    req.session.challenge = false;
     res.send('success');
 });
 
 app.post('/start_prebuilt_workout', function(req, res){
   req.session.newWorkout = req.body;
+  req.session.challenge = false;
   res.send('success');
 });
 
@@ -580,6 +582,12 @@ app.get('/do_challenge_workout', function(req, res){
   });
 });
 
+app.get('/workout_type', function(req, res){
+  
+  // Send whether this is a challenge or regular workout
+  res.send(req.session.challenge);
+});
+
 app.post('/save_workout', function(req, res){
   // Converts favorite true/false to 0/1 for DB
   var isFavorite = false;
@@ -680,6 +688,7 @@ app.post('/begin_challenge', function(req, res){
 
   // Saves the challenges ID to the session
   req.session.doChallengeId = req.body.id;
+  req.session.challenge = true;
   res.send('Success');
 });
 
@@ -762,5 +771,5 @@ app.get('/prebuilt_workouts', function(req, res){
   res.sendFile(path, {root: './public'})
 })
 
-console.log('Express started on port 3000; press Ctrl-C to terminate.');
+console.log('Express started on port 1344; press Ctrl-C to terminate.');
 http.createServer(app).listen(1344);

@@ -193,7 +193,7 @@ function startWorkout(id){
     req.send(JSON.stringify(startObject));
 	
 	// Redirect to the do challenge page
-	window.location.href = "/do_challenge";
+	window.location.href = "/test_workout";
 
 };
 

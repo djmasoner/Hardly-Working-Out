@@ -139,11 +139,11 @@ function buildChallenge(){
 	   				alert('Please specify an order for your exercises');
 	   				return;
 	   			};
-	   			if (r3.children[0].value > exerciseArray.length) {
+	   			if (r3.children[0].value-1 > exerciseArray.length) {
 	   				alert('The order specified for an exercise exceeds the total exercises selected');
 	   				return;
 	   			};
-	   			if (typeof exerciseArray[r3.children[0].value] == 'object') {
+	   			if (typeof exerciseArray[r3.children[0].value-1] == 'object') {
 	   				alert('You have specified 2+ exercises for the same order');
 	   				return;
 	   			};
@@ -151,7 +151,7 @@ function buildChallenge(){
 			        "id": r1.children[0].id,
 			        "sets": r2.children[0].value
 			    };
-			    exerciseArray[r3.children[0].value] = exerciseObject;
+			    exerciseArray[r3.children[0].value-1] = exerciseObject;
 	   		};
 	}
 

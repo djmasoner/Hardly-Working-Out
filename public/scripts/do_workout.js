@@ -5,6 +5,7 @@ document.getElementById("submit_workout").addEventListener("click", endWorkout);
 // Global variables used to track a users progression through a workout
 var workoutTime = 0;
 var exerciseTime = 0;
+var exerciseTimeSet = 0;
 var exerciseNum = 0;
 var exerciseMax = 0;
 var exerciseTimeLeft = 0;
@@ -13,6 +14,7 @@ var totalPoints = 0;
 var clear_bool = false;
 var exerciseWindow;
 var workoutStarted = false;
+var isChallenge;
 
 // Used to determine if the time needed to start on the timer is the beginning time
 // Saved time and current time variables declared
@@ -55,8 +57,40 @@ function displayPoints() {
 };
 
 
+function getWorkoutType(){
+
+	var req = new XMLHttpRequest();
+
+    req.open('GET', serverUrl+'/workout_type', true);
+
+    req.withCredentials = false;
+	req.onload = function (e) {
+	  	if (req.readyState === 4) {
+	    	if (req.status === 200) {
+
+	    	isChallenge = JSON.parse(req.responseText);
+	    	if (isChallenge == true) {
+	    		doChallenge();
+	    	} else {
+	    		doWorkout();
+	    	}
+
+	    	} else {
+	      		console.error(req.statusText);
+	    	}
+	  	}
+	};
+	req.onerror = function (e) {
+	  console.error(req.statusText);
+	};
+	req.send(null);
+
+};
+
 function doWorkout(){
-    var req = new XMLHttpRequest();
+
+	// Call the do workout function
+	var req = new XMLHttpRequest();
 
     req.open('GET', serverUrl+'/do_workout', true);
 
@@ -80,6 +114,37 @@ function doWorkout(){
 	  console.error(req.statusText);
 	};
 	req.send(null);
+
+};
+
+function doChallenge(){
+
+	// Call the do workout function
+	var req = new XMLHttpRequest();
+
+    req.open('GET', serverUrl+'/do_challenge_workout', true);
+
+    req.withCredentials = false;
+	req.onload = function (e) {
+	  	if (req.readyState === 4) {
+	    	if (req.status === 200) {
+
+	    	// SQL Data returned from server
+			var data = JSON.parse(req.responseText);
+			unpackData(data);
+			timeData(data);
+			calculatePoints(data);
+
+	    	} else {
+	      		console.error(req.statusText);
+	    	}
+	  	}
+	};
+	req.onerror = function (e) {
+	  console.error(req.statusText);
+	};
+	req.send(null);
+
 };
 
 // https://stackoverflow.com/questions/58842508/how-to-fill-a-100-progress-bar-according-to-the-time-specified-by-the-user
@@ -192,6 +257,7 @@ function exerciseTimer(){
 	// Get the start time and display element
 	if (beginningTimeExercise == true) {
 		currentTimeExercise = exerciseArray[exerciseNum] * 60;
+		exerciseTimeSet = exerciseArray[exerciseNum] * 60;
 	}
 
 	// Repeater function which calculates the remaining time for an exercise
@@ -294,6 +360,7 @@ function displayExercise(num, name, reps, sets, points, id, mins) {
           savedEllapsed = savedEllapsed + (mins * 60000);
         };
         currentTime = currentTime - exerciseTimeLeft;
+        this.name = (1 + (exerciseTimeLeft/exerciseTimeSet)).toString();
         exerciseNum++;
         clear_bool = true;
         exerciseTimer();
@@ -382,7 +449,17 @@ function creatSkipButton (id, mins, num) {
   return skipButton
 };
 
-function endWorkout () {
+// When the end workout button is pressed, submits a challenge or a workout depending 
+// on what kind of workout it is
+function endWorkout() {
+	if (isChallenge == true) {
+		submitChallenge();
+	} else {
+		submitWorkout();
+	}
+}
+
+function submitWorkout () {
   // Link to the modal page
   //window.location.assign("http://localhost:3000/modal_button.html");
 
@@ -419,4 +496,44 @@ alert("Congrats on your Workout!");
 window.location.href = "/welcome";
 };
 
-doWorkout();
+function submitChallenge () {
+  event.preventDefault();
+
+  var completeArray = [];
+  var pointsEarned = 0;
+  var challengePointsEarned = 0;
+  var completeButtons = document.getElementsByClassName('complete-btn');
+  for (i=0; i < completeButtons.length; i++) {
+	  if (completeButtons[i].classList.contains("done")) {
+		completeArray.push(completeButtons[i].id);
+		pointsEarned = pointsEarned + Number(completeButtons[i].value);
+		challengePointsEarned = challengePointsEarned + (Number(completeButtons[i].value)*Number(completeButtons[i].name));
+	  };
+  } ;
+  var results = Object();
+  results.completedExercises = completeArray;
+  results.points = pointsEarned;
+  results.challengePoints = Math.round(challengePointsEarned);
+  results.description = document.getElementById('workout_description').value;
+  results.title = document.getElementById('workout_name').value;
+  results.rating = document.getElementById('workout_rating').value;
+  results.favorite = document.getElementById('workout_favorite').checked;
+
+  var req = new XMLHttpRequest();
+  
+  req.open('POST', serverUrl+'/save_challenge', true);
+  req.setRequestHeader('Content-Type', 'application/json');
+  req.addEventListener('load',function(){
+    if(req.status >= 200 && req.status < 400){
+  		console.log(req.responseText);
+    } else {
+      console.log("Error in network request: " + req.statusText);
+    }});
+
+  req.send(JSON.stringify(results));
+alert("Congrats on your Challenge!");
+window.location.href = "/welcome";
+
+}
+
+getWorkoutType();
